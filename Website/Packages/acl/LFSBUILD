@@ -1,0 +1,39 @@
+#!/bin/sh
+LFSPKGREPO="https://ilovetrees242.github.io/DevHelp/Website/Packages"
+LFSPKGNAME="acl"
+LFSPKGVERSION="2.3.2"
+LFSPKG="$LFSPKGNAME-$LFSPKGVERSION"
+DEPENDS="attr glibc"
+case $1 in
+	chkdeps)
+		command $(echo $DEPENDS | awk '{print $1}') &> /dev/null
+		if [ $? -eq 127 ]; then
+			echo "attr not found!"
+			exit 1
+		fi
+		if [ $(echo $DEPENDS | awk '{print $2}') = "glibc" ]; then
+			ldd --version &> /dev/null
+			if [ $? -ne 0 ]; then
+				echo "glibc not installed!"
+				exit 1
+			fi
+		fi
+	;;
+	build)
+		tar xvf $LFSPKGNAME.tar.xz
+		pushd $LFSPKGNAME
+			./configure --prefix=/usr --disable-static
+			make
+			make install
+		popd
+	;;
+	uninstall)
+		rm -f /usr/bin/chacl /usr/bin/getfacl /usr/bin/setfacl
+		rm -rf /usr/include/acl
+		rm -rf /usr/share/doc/acl
+		rm -f /usr/lib/libacl* /usr/lib/pkgconfig/libacl.pc
+		rm -rf /usr/share/man/man1/{chacl.1, getfacl.1, setfacl.1}
+		rm -rf /usr/share/man/man3/acl*.3
+		rm -rf /usr/share/man/man5/acl.5
+	;;
+esac

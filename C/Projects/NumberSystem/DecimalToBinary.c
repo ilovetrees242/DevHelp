@@ -13,10 +13,10 @@ int main(){
 			sprintf(BinaryNum + strlen(BinaryNum), "%d", 1);
 			DecNum /= 2;
 		}
-		else if(DecNum % 2 == 0)
-			sprintf(BinaryNum + strlen(BinaryNum), "%d", 1);
+		else if(DecNum % 2 == 0){
+			sprintf(BinaryNum + strlen(BinaryNum), "%d", 0);
 			DecNum /= 2;
 		}
 	}
-	printf("%s", BinaryNum);
+	printf("%s\n", BinaryNum);
 }
