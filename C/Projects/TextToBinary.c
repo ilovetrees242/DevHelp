@@ -32,7 +32,7 @@ int main(){
 	Text[strlen(Text) - 1] = '\0';
 	for(int i = 0; i < strlen(Text); i++){
 		CharBuffer = Text[i];
-		printf("%s ", DecToBin(CharBuffer));
+		printf("%-8s ", DecToBin(CharBuffer));
 		Counter++;
 		if(Counter == 5){
 			Counter = 0;
