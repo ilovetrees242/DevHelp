@@ -18,24 +18,30 @@ int main(){
 	char Binary[260];
 	char BinaryNums[256][256] = {0};
 	int  NumBuffer = 0;
+	char Buffer[4];
 	char Result[256];
 	int  Counter = 0;
 	int  CounterChar = 0;
 	printf("Enter a binary number(max characters 256): ");
 	fgets(Binary, sizeof(Binary), stdin);
 	Binary[strlen(Binary) - 1] = '\0';	
-	for(int i = 0; i < strlen(Binary); i++){
-		BinaryNums[Counter][CounterChar] = Binary[i];
+	for(int i = strlen(Binary); i > 0; i--){
+		BinaryNums[Counter][CounterChar] = Binary[i - 1];
 		CounterChar++;
 		if(strlen(BinaryNums[Counter]) == 3){
+			strcpy(Buffer, BinaryNums[Counter]);
+			for(int i = CounterChar; i > 0; i--){
+				BinaryNums[Counter][CounterChar - i] = Buffer[i - 1];	
+			}
 			CounterChar = 0;
 			Counter++;
 		}
 	}
-	for(int i = 0; i < sizeof(BinaryNums[0]) / sizeof(BinaryNums[0][0]); i++){
+	printf("%s\n", BinaryNums[0]);
+	const int length = sizeof(BinaryNums[0]) / sizeof(BinaryNums[0][0]);
+	for(int i = 0; length > i; i++){
 		if(BinaryNums[i][0] == '\0')
 			break;
-
 		sprintf(Result + strlen(Result), "%d", toOct(BinaryNums[i]));
 	}
 	for(int i = strlen(Result); i > 0; i--){

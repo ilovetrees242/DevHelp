@@ -18,5 +18,8 @@ int main(){
 			DecNum /= 2;
 		}
 	}
-	printf("%s\n", BinaryNum);
+	for(int i  = strlen(BinaryNum); i > 0; i--){
+		printf("%c", BinaryNum[i - 1]);
+	}
+	printf("\n");
 }
