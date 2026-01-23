@@ -1,5 +1,0 @@
-#!/bin/sh
-LFSPKGNAME="neofetch"
-LFSPKGVERSION="7.1.0"
-LFSPKG="neofetch-7.1.0"
-DEPENDS=""

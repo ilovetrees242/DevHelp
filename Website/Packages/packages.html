@@ -8,27 +8,66 @@
 <body>
 	<div class="navbar">
 		<div class="panel">
-			<a><div>Java</div></a>
+			<a><div>C</div></a>
 			<a><div>Linux</div></a>
 			<a href="packages.html"><div>Packages</div></a>
 		</div>
 		<a href="../index.html"><div class="logo">CoolWeb</div></a>
 		<div class="navbtn">Navigate!</div>
-		<div class="design">W</div>
-		<div class="design">E</div>
-		<div class="design">T</div>
-		<div class="design">D</div>
-		<div class="design">S</div>
-		<div class="design">T</div>
 	</div>
 	<p class="reponame">The <b>veiler</b> package repository.</p>
 	<div class="pkgbox">
 		<a class="pkg" href="which.tar.gz">which</a>
-		<p><b>Package description:</b>The which utility is a program which is used to locate programs on a users PATH enviroment variable.</p>
-		<p><b>Package version:<b> 2.24</p>
-		<p><b>Example of using the which utility:</b></p>
+		<p class="pkgdesc"><b>Package description: </b>The which utility is a program which is used to locate programs on a users PATH enviroment variable.</p>
+		<p class="pkgver"><b>Package version:</b> 2.24</p>
+		<p class="example"><b>Example of using the which utility:</b></p>
+        <pre>
+        <code>
+ LFS@Hp440G8: ~ $ which ls 
+ /usr/bin/ls               
+ LFS@Hp440G8: ~ $
+        </code>
+        </pre>
+        <p class="insprogs">Installed Programs: which</p>
 	</div>
-	<a class="pkg" href="acl.tar.gz">acl</a>
-	<a class="pkg" href="attr.tar.gz">attr</a>
+
+	<div class="pkgbox" style="height: auto; padding-bottom: 5px;">
+		<a class="pkg" href="acl.tar.gz">acl</a>
+        <p class="pkgdesc"><b>Package description: </b>The ACL (Access Control Lists) provide an extended permission mechanism in Linux that allows you to set specific permissions for individual users or groups beyond standard rwx for user/groups/other permissions.</p>
+		<p class="pkgver"><b>Package version:</b> 2.3.2</p>
+		<p class="example"><b>Example of using getfacl from ACL:</b></p>
+        <pre style="overflow: scroll;">
+        <code>
+ LFS@Hp440G8: ~/GitHub/DevHelp/C $ ls
+ Development   Makefile   Out   Projects
+ LFS@Hp440G8: ~/GitHub/DevHelp/C $ getfacl Makefile 
+ # file: Makefile
+ # owner: LFS
+ # group: LFS
+ user::rw-
+ group::r--
+ other::r--
+        </code>
+        </pre>
+        <p class="insprogs">Installed Programs: getfacl chacl setfacl</p>
+	</div>
+
+	<div class="pkgbox">
+	    <a class="pkg" href="attr.tar.gz">attr</a>
+		<p class="pkgdesc"><b>Package description: </b>Extendede attribute support library beyond standard file attributes (permissions, ownerships)</p>
+		<p class="pkgver"><b>Package version:</b> 2.5.2</p>
+		<p class="example"><b>Example of using attr:</b></p>
+        <pre style="overflow: scroll;">
+        <code>
+ LFS@Hp440G8: ~/GitHub/DevHelp/C $ attr -s language -V "Make" Makefile 
+ Attribute "language" set to a 4 byte value for Makefile:
+ Make
+ LFS@Hp440G8: ~/GitHub/DevHelp/C $ attr -l Makefile 
+ Attribute "language" has a 4 byte value for Makefile
+ LFS@Hp440G8: ~/GitHub/DevHelp/C $ 
+        </code>
+        </pre>
+        <p class="insprogs">Installed Programs: attr getfattr setfattr</p>
+	</div>
 </body>
 </html>

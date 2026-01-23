@@ -1,4 +1,5 @@
 body{
+    
     margin: 0;
     padding: 0;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -15,7 +16,8 @@ body{
 	top: 0;
 	width: 100%;
 	border-radius: 10px;
-	background-color: #252526;
+	background-color: #ECE6E9;
+    padding-bottom: 5px;
 	box-shadow: 0px 0px 5px 5px #151516;
 	text-align: left;
 }
@@ -48,16 +50,6 @@ body{
 	cursor: pointer;
 	background-color: #2C2B2C;
 }
-.navbar > .design {
-	padding: 15px;
-	margin: 0px;
-	display: inline-block;
-	margin-bottom: 5px;
-	width: 30px;
-	color: white;
-	text-align: center;
-	border-radius: 10px;
-}
 .navbar > .panel {
 	background-color: rgba(15, 15, 15, 0.5);
 	backdrop-filter: blur(8px);
@@ -67,34 +59,15 @@ body{
 	display: block;
 	position: absolute;
 	border-radius: 0px;
-	margin-top: 55px;
+	margin-top: 65px;
 	display: block;
 	transition: 2s ease;
-	transform: translate(-2500px);
+	transform: translate(-2480px);
 }
 .navbar:has(.navbtn:hover) > .panel {
 	transform: translate(4px);
 	display: block;
 	box-shadow: 0px 0px 50px 20px #212121;
-}
-.navbar > .design:nth-of-type(3){
-	margin-left: 100px;
-	background-color: #363636;
-}
-.navbar > .design:nth-of-type(4){
-	background-color: #151516;
-}
-.navbar > .design:nth-of-type(5){
-	background-color: #050506;
-}
-.navbar > .design:nth-of-type(6){
-	background-color: #3A3A3A;
-}
-.navbar > .design:nth-of-type(7){
-	background-color: #5A5A5A;
-}
-.navbar > .design:nth-of-type(8){
-	background-color: #212121;
 }
 .navbar > .panel:hover {
 	display: block;
@@ -132,18 +105,37 @@ body{
 	-webkit-text-fill-color: transparent;
 }
 .pkgbox {
-	background-color: #ffffff;
+	background-color: #1f1f1f;
 	width: 70%;
 	margin: 5px;
 	height: 500px;
 	border-radius: 15px;
 }
 .pkgbox > .pkg {
-	color: #1C1B1C;
+	color: #ECE6E9;
 	text-decoration: none;
 	margin: 25px;
 	font-size: 50px;
 
+}
+.pkgbox > .pkgdesc {
+    background-color: #151414;
+    color: #E6E0E3;
+    width: 75%;
+    padding: 7.5px;
+    border-radius: 5px;
+}
+.pkgbox > .pkgver {
+    background-color: #3a3a3a;
+    color: #E6E0E3;
+    width: 75%;
+    padding: 7.5px;
+    border-radius: 5px;
+}
+.pkgbox > .example {
+    margin-left: 25px;
+    font-size: 25px;
+    color: #ECE6E9;
 }
 .pkgbox > * {
 	color: black;
@@ -151,5 +143,16 @@ body{
 	margin-left: 25px;
 }
 .pkgbox > p > b {
-	color: #6a6a6a;
+	color: #ECE6E9;
+}
+.pkgbox > pre {
+    width: 75%;
+    border-radius: 5px;
+    background-color: #161515;
+}
+.pkgbox > pre >  code {
+    color: #F9F9F9;
+}
+.pkgbox > .insprogs {
+   color: #ECE6E9; 
 }
