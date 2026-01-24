@@ -16,6 +16,15 @@
 		<div class="navbtn">Navigate!</div>
 	</div>
 	<p class="reponame">The <b>veiler</b> package repository.</p>
+    <div class="alphabets">
+        <a>Numbers</a>
+        <a>A</a><a>B</a><a>C</a><a>D</a><a>E</a>    
+        <a>F</a><a>G</a><a>H</a><a>I</a><a>J</a>    
+        <a>K</a><a>L</a><a>M</a><a>N</a><a>O</a>    
+        <a>P</a><a>Q</a><a>R</a><a>S</a><a>T</a>    
+        <a>U</a><a>V</a><a>W</a><a>X</a><a>Y</a>    
+        <a>Z</a>
+    </div>
 	<div class="pkgbox">
 		<a class="pkg" href="which.tar.gz">which</a>
 		<p class="pkgdesc"><b>Package description: </b>The which utility is a program which is used to locate programs on a users PATH enviroment variable.</p>
@@ -39,7 +48,7 @@
         <pre style="overflow: scroll;">
         <code>
  LFS@Hp440G8: ~/GitHub/DevHelp/C $ ls
- Development   Makefile   Out   Projects
+ Development   Makefile   Out   Projects 
  LFS@Hp440G8: ~/GitHub/DevHelp/C $ getfacl Makefile 
  # file: Makefile
  # owner: LFS
@@ -52,9 +61,11 @@
         <p class="insprogs">Installed Programs: getfacl chacl setfacl</p>
 	</div>
 
-	<div class="pkgbox">
-	    <a class="pkg" href="attr.tar.gz">attr</a>
-		<p class="pkgdesc"><b>Package description: </b>Extendede attribute support library beyond standard file attributes (permissions, ownerships)</p>
+	<div class="pkgbox" style="padding-bottom: 20px;">
+	    <a id="attr" class="pkg" href="attr.tar.gz" style="scroll-margin-top: 80px;">
+            attr
+        </a>
+		<p class="pkgdesc"><b>Package description: </b>Extended attribute support library beyond standard file attributes (permissions, ownerships)</p>
 		<p class="pkgver"><b>Package version:</b> 2.5.2</p>
 		<p class="example"><b>Example of using attr:</b></p>
         <pre style="overflow: scroll;">
@@ -68,6 +79,41 @@
         </code>
         </pre>
         <p class="insprogs">Installed Programs: attr getfattr setfattr</p>
+    </div>
+
+	<div class="pkgbox" style="height: 950px;">
+	    <a class="pkg" href="neofetch.tar.gz">neofetch</a>
+		<p class="pkgdesc"><b>Package description: </b>System information utiltiy used to display information like the kernel name, distro name uptime, packages installed, etc</p>
+		<p class="pkgver"><b>Package version:</b> 7.1.0</p>
+		<p class="example"><b>Example of using neofetch:</b></p>
+        <pre style="overflow: scroll;">
+        <code>
+ LFS@Hp440G8: ~ $ neofetch
+         #####           LFS@Hp440G8 
+        #######          ----------- 
+        ##O#O##          OS: Linux From Scratch x86_64 
+        #######          Host: HP ProBook 440 G8 Notebook PC SBKPF 
+      ###########        Kernel: 6.16.1 
+     #############       Uptime: 18 mins 
+    ###############      Packages: 27 (flatpak) 
+    ################     Shell: bash 5.3.0 
+   #################     Resolution: 1920x1080 
+ #####################   DE: Hyprland 
+ #####################   Theme: adw-gtk3-dark [GTK3] 
+   #################     Icons: Adwaita [GTK3] 
+                         Terminal: kitty 
+                         CPU: 11th Gen Intel i5-1145G7 (8) @ 4.400GHz 
+                         GPU: Intel TigerLake-LP GT2 [Iris Xe Graphics] 
+                         Memory: 4157MiB / 15682MiB 
+
+                                                
+                                                
+
+
+ LFS@Hp440G8: ~ $ 
+        </code>
+        </pre>
+        <p class="insprogs">Installed Programs: neofetch</p>
 	</div>
 </body>
 </html>

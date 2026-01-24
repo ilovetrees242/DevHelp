@@ -1,0 +1,33 @@
+#!/bin/sh
+LFSPKGNAME="which"
+LFSPKGVERSION="2.23"
+LFSPKG="$LFSPKGNAME-$LFSPKGVERSION"
+LFSPKGREPO="https://ilovetrees242.github.io/DevHelp/Website/Packages"
+DEPENDS="bash glibc"
+case $1 in
+	chkdeps)
+        $(echo $DEPENDS | awk '{print $1}') --version
+		if [ $? -ne 0 ]; then
+            echo "Dependency $(echo $DEPENDS | awk '{print $1}') not found!"
+			exit 1
+		fi
+        GLIBC=$(readelf -d $(find /usr -name "libc.so.6") | grep "soname" | awk '{print $5}')
+		if [ "$GLIBC" != "[libc.so.6]" ]; then
+            echo "Dependency $(echo $DEPENDS | awk '{print $2}') not found!"
+			exit 1
+		fi
+	;;
+	build)
+		tar xvf $LFSPKG.tar.?z
+		pushd $LFSPKG
+			./configure --prefix=/usr 
+			make
+			make install
+		popd
+		rm -rf $LFSPKGNAME $LFSPKGNAME.tar.?z
+	;;
+	uninstall)
+		rm /usr/bin/which
+		rm -rf /usr/share/man/man1/which.1
+	;;
+esac

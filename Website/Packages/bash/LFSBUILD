@@ -5,15 +5,9 @@ LFSPKG="$LFSPKGNAME-$LFSPKGVERSION"
 DEPENDS="ncurses readline glibc"
 case $1 in
 	chkdeps)
-		command clear
-		if [ $? -eq 127 ]; then
-			echo "$(echo $DEPENDS | awk '{print $1}') not found!"
-			exit 1
-		fi
-		command
-		if [ $? -eq 127 ]; then
-			echo "ncurses not found!"
-			exit 1
+        NCURSES = $(readelf -d $(find /usr -name "libncursesw.so") | grep "soname" | awk '{print $5}')
+		if [ -z "$NCURSES" ]; then
+            echo "ncurses not found!"
 		fi
 		command ldconfig
 		if [ $? -eq 127 ]; then

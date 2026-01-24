@@ -6,6 +6,9 @@ body{
     font-weight: lighter;
     background-color: #161515;
 }
+html {
+    scroll-behaviour: smooth;
+}
 *{
 	font-weight: bold;
 	color: white;
@@ -20,6 +23,7 @@ body{
     padding-bottom: 5px;
 	box-shadow: 0px 0px 5px 5px #151516;
 	text-align: left;
+    transition: 2s ease;
 }
 .navbar > .navbtn {
 	background-color: #1C1B1C;
@@ -64,14 +68,20 @@ body{
 	transition: 2s ease;
 	transform: translate(-2480px);
 }
+.navbar:has(.navbtn:hover) {
+    border-radius: 0px;
+}
+.navbar:has(.panel:hover) {
+    border-radius: 0px;
+}
 .navbar:has(.navbtn:hover) > .panel {
-	transform: translate(4px);
+	transform: translate(0px);
 	display: block;
 	box-shadow: 0px 0px 50px 20px #212121;
 }
 .navbar > .panel:hover {
 	display: block;
-	transform: translate(4px);
+	transform: translate(0px);
 	box-shadow: 0px 0px 55px 20px #212121;
 }
 .navbar > .panel > a > div:hover {
@@ -103,6 +113,31 @@ body{
 	background: -webkit-linear-gradient(45deg, #fff, #151515);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
+}
+.alphabets {
+    width: 50%;
+    margin: 5px;
+    padding: 15px;
+    background-color: #ECE6E9;
+    border-radius: 25px;
+}
+.alphabets a {
+    display: block;
+    padding: 25px;
+    background-color: #151414;
+    color: #ECE6E9;
+}
+.alphabets a:first-child {
+    border-top-right-radius: 25px;
+    border-top-left-radius: 25px;
+}
+.alphabets a:last-child {
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+.alphabets a:hover {
+    background-color: #1c1c1c;
+    cursor: pointer;
 }
 .pkgbox {
 	background-color: #1f1f1f;
