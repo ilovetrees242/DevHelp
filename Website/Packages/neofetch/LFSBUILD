@@ -1,0 +1,25 @@
+#!/bin/sh
+LFSPKGNAME="neofetch"
+LFSPKGVERSION="7.1.0"
+LFSPKG="neofetch-7.1.0"
+DEPENDS="bash"
+case $1 in
+    chkdeps)
+        $(echo "$DEPENDS" | awk '{print $1}') --version 2&> /dev/null
+        if [ $? -eq 127 ]; then
+            echo -e "${RED}Dependency $(echo "$DEPENDS" | awk '{print $1}') not found!${NC}"
+            exit 1
+        fi
+    ;;
+    build)
+        tar xvf $LFSPKG.tar.gz
+        pushd $LFSPKG
+            make PREFIX=/usr install
+        popd
+        rm -rf $LFSPKG.tar.gz $LFSPKG
+    ;;
+    uninstall)
+        rm -f /usr/bin/neofetch
+        echo -e "${GREEN}Successfully removed $LFSPKGNAME.${NC}"
+    ;;
+esac
