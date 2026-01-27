@@ -1,0 +1,134 @@
+Install
+=======
+
+You will need an ANSI C compiler (like gcc) to compile this package.
+
+Just type `make', followed by `make install'.
+
+History
+=======
+
+The main difference with version 1.0 by Paul Vixie is that this
+version will not return directory names as being executables
+and that by default it will expand a leading "./" and "~/" to
+its full path on output.
+
+The -all option has been added in example of a version of which
+on Ultrix.  They use `-a' as option.
+
+The --read-alias idea has been copied from a version of which by
+Maarten Litmaath called `which-v6', he was using `-i' as option
+which stands for `interactive'.
+
+Manual page
+===========
+
+       which - shows the full path of (shell) commands.
+
+[1mSYNOPSIS[0m
+       [1mwhich [22m[options] [--] programname [...]
+
+[1mDESCRIPTION[0m
+       [1mWhich [22mtakes one or more arguments. For each of its arguments it prints
+       to stdout the full path of the executables that would have been exe-
+       cuted when this argument had been entered at the shell prompt. It does
+       this by searching for an executable or script in the directories listed
+       in the environment variable [1mPATH [22musing the same algorithm as [1mbash(1)[22m.
+
+       This man page is generated from the file [4mwhich.texinfo[24m.
+
+[1mOPTIONS[0m
+       [1m--all[22m, [1m-a[0m
+           Print all matching executables in [1mPATH[22m, not just the first.
+
+       [1m--read-alias[22m, [1m-i[0m
+           Read aliases from stdin, reporting matching ones on stdout. This is
+           useful in combination with using an alias for which itself. For ex-
+           ample
+           [1malias which='alias | which -i'[22m.
+
+       [1m--skip-alias[0m
+           Ignore  option  `--read-alias', if any. This is useful to explicity
+           search for normal binaries, while using the  `--read-alias'  option
+           in an alias or function for which.
+
+       [1m--read-functions[0m
+           Read shell function definitions from stdin, reporting matching ones
+           on  stdout.  This is useful in combination with using a shell func-
+           tion for which itself.  For example:
+           [1mwhich() { declare -f | which --read-functions $@ }[0m
+           export -f which
+
+       [1m--skip-functions[0m
+           Ignore option `--read-functions', if any. This is useful to explic-
+           ity search for normal binaries, while using the  `--read-functions'
+           option in an alias or function for which.
+
+       [1m--skip-dot[0m
+           Skip directories in [1mPATH [22mthat start with a dot.
+
+       [1m--skip-tilde[0m
+           Skip  directories  in  [1mPATH [22mthat start with a tilde and executables
+           which reside in the [1mHOME [22mdirectory.
+
+       [1m--show-dot[0m
+           If a directory in [1mPATH [22mstarts with a dot and a matching  executable
+           was found for that path, then print "./programname" rather than the
+           full path.
+
+       [1m--show-tilde[0m
+           Output  a  tilde  when a directory matches the [1mHOME [22mdirectory. This
+           option is ignored when which is invoked as root.
+
+       [1m--tty-only[0m
+           Stop processing options on the right if not on tty.
+
+       [1m--version,-v,-V[0m
+           Print version information on standard  output  then  exit  success-
+           fully.
+
+       [1m--help[0m
+           Print usage information on standard output then exit successfully.
+
+[1mRETURN VALUE[0m
+       [1mWhich  [22mreturns  the number of failed arguments, or -1 when no `program-
+       name' was given.
+
+[1mEXAMPLE[0m
+       The recommended way to use this utility is by adding an alias (C shell)
+       or shell function (Bourne shell) for [1mwhich [22mlike the following:
+
+       [ba]sh:
+
+            which ()
+            {
+              (alias; declare -f) | /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot $@
+            }
+            export -f which
+
+       [t]csh:
+
+            alias which 'alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'
+
+       This will print the readable ~/ and ./ when starting  which  from  your
+       prompt, while still printing the full path when used from a script:
+
+            > which q2
+            ~/bin/q2
+            > echo $(which q2)
+            /home/carlo/bin/q2
+
+
+[1mBUGS[0m
+       The  [1mHOME  [22mdirectory  is determined by looking for the [1mHOME [22menvironment
+       variable, which aborts when this variable doesn't  exist.   [1mWhich  [22mwill
+       consider  two  equivalent  directories to be different when one of them
+       contains a path with a symbolic link.
+
+[1mAUTHOR[0m
+       Carlo Wood <carlo@gnu.org>
+
+[1mSEE ALSO[0m
+       [1mbash(1)[0m
+
+                                                                      [4mWHICH[24m(1)
