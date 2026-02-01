@@ -1,17 +1,12 @@
 body{
-    
-    margin: 0;
-    padding: 0;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-weight: lighter;
     background-color: #161515;
 }
 *{
-    margin: 0;
     color: #EED8E5;
     font-family: "SN Pro";
 }
 .nav {
+    top: 0px;
     background-color: #212121;
     width: 20%;
     height: 100%;
@@ -19,6 +14,7 @@ body{
     overflow: hidden;
     border-image: linear-gradient(to top, #151414 0%, #BB9FC2 100%) 1; 
     border-right: 4px solid;
+    margin: 0
 } 
 .nav div {
     background-color: #B292AC;
@@ -30,8 +26,9 @@ body{
     background: linear-gradient(45deg, #050505, #8C7289);
     position: absolute;
     width: 100%;
+    font-weight: bold;
 }
-.nav a {
+.nav a:not(:nth-of-type(4)) {
     text-decoration: none;
     display: block;
     text-align: center;
@@ -41,25 +38,45 @@ body{
     background-position: -500px;
     transition: 1s ease-in-out;
 }
+.nav a:nth-of-type(4) {
+    background-color: #BB9FC2;
+    padding: 25px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 1s ease-in-out;
+    box-shadow: 0px 15px 55px 15px #BB9FC2;
+}
+.nav a:nth-of-type(4):hover {
+    box-shadow: 0px 15px 55px 15px #BE9BB2;
+    background-color: #BE9BB2;
+}
 .nav a:hover{
     background-color: #C8A3BC;
     background-position: 0px;
 }
 .reponame {
-	font-size: 85px;
+    border-radius: 15px;
+    padding: 75px;
+    font-size: 75px;
+    margin-left: 21%;
+    margin-top: 0px;
+    background-color: #BB9FC2;
 }
 .reponame > b {
 	font-size: 72px;
-	background: -webkit-linear-gradient(45deg, #fff, #151515);
+	background: -webkit-linear-gradient(45deg, #EED8E5, #FFDDFF 50%);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 }
 .alphabets {
-    width: 50%;
+    width: 75%;
     margin: 5px;
     padding: 15px;
     background-color: #ECE6E9;
     border-radius: 25px;
+    margin-left: 21%;
 }
 .alphabets a {
     display: block;
@@ -83,6 +100,7 @@ body{
 	background-color: #1f1f1f;
 	width: 70%;
 	margin: 5px;
+    margin-left: 21%;
 	height: 500px;
 	border-radius: 15px;
 }
