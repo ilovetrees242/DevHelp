@@ -7,7 +7,9 @@ body{
 }
 .nav {
     top: 0px;
-    background-color: #212121;
+    left: 0px;
+    bottom: 0px;
+    background-color: #050505;
     width: 20%;
     height: 100%;
     position: fixed;
@@ -25,6 +27,7 @@ body{
     color: #E6ECE6;
     background: linear-gradient(45deg, #050505, #8C7289);
     position: absolute;
+    margin: 0px;
     width: 100%;
     font-weight: bold;
 }
@@ -35,7 +38,7 @@ body{
     padding: 25px;
     background: linear-gradient(45deg, #ffddff 0%, #050505 50%);
     background-size: 1000px;
-    background-position: -500px;
+    background-position: -560px;
     transition: 1s ease-in-out;
 }
 .nav a:nth-of-type(4) {
@@ -46,7 +49,7 @@ body{
     text-decoration: none;
     font-weight: bold;
     transition: 1s ease-in-out;
-    box-shadow: 0px 15px 55px 15px #BB9FC2;
+    box-shadow: 0px 10px 55px 10px #BB9FC2;
 }
 .nav a:nth-of-type(4):hover {
     box-shadow: 0px 15px 55px 15px #BE9BB2;
@@ -73,9 +76,10 @@ body{
 .alphabets {
     width: 75%;
     margin: 5px;
-    padding: 15px;
-    background-color: #ECE6E9;
     border-radius: 25px;
+    background: linear-gradient(to bottom, #B69BBD, #1F1F1F 50%);
+    padding: 4px;
+    border: none;
     margin-left: 21%;
 }
 .alphabets a {
@@ -97,7 +101,7 @@ body{
     cursor: pointer;
 }
 .pkgbox {
-	background-color: #1f1f1f;
+	background-color: #050505;
 	width: 70%;
 	margin: 5px;
     margin-left: 21%;
@@ -112,14 +116,14 @@ body{
 
 }
 .pkgbox > .pkgdesc {
-    background-color: #151414;
+    background-color: #90758D;
     color: #E6E0E3;
     width: 75%;
     padding: 7.5px;
     border-radius: 5px;
 }
 .pkgbox > .pkgver {
-    background-color: #3a3a3a;
+    background-color: #BB9FC2;
     color: #E6E0E3;
     width: 75%;
     padding: 7.5px;
