@@ -1,330 +1,121 @@
-body{
-    margin: 0;
-    padding: 0;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-weight: lighter;
-    background-color: #191919;
+body {
+    background-color: #161515;
 }
 *{
-	font-weight: bold;
-	color: white;
+    margin: 0;
+    color: #EED8E5;
+    font-family: "SN Pro";
 }
-.Container1{
-    background: linear-gradient(45deg, #161515, #262626 );
-    padding-top: 25px;
-    padding-bottom: 25px;
+.nav {
+    background-color: #212121;
+    width: 20%;
+    height: 100%;
+    position: fixed;
+    overflow: auto;
+} 
+.nav div {
+    background-color: #B292AC;
 }
-.introduction{
+.nav div h1 {
+    bottom: 0;
+    padding: 25px;
+    color: #E6ECE6;
+    background: linear-gradient(45deg, #050505, #8C7289);
+    position: absolute;
+    width: 100%;
+}
+.nav a {
+    text-decoration: none;
+    display: block;
     text-align: center;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    color: white;
+    padding: 25px;
+    background: linear-gradient(45deg, #ffddff 0%, #050505 50%);
+    background-size: 1000px;
+    background-position: -500px;
+    transition: 1s ease-in-out;
 }
-.navbar{
-	color: white;
-	position: sticky;
-	top: 0;
-	width: 100%;
-	border-radius: 10px;
-	background-color: #ECE6E9;
-	box-shadow: 0px 0px 50px 5px #151616;
-	text-align: left;
-    padding-bottom: 5px;
+.nav a:hover{
+    background-color: #C8A3BC;
+    background-position: 0px;
 }
-.navbar > .navbtn {
-	background-color: #1C1B1C;
-	display: inline-flex;
-	width: 150px;
-	justify-content: center;
-	align-items: center;
-	transition: 2s ease;
-	border-radius: 15px;
-	padding: 15px;
-	margin-top: 5px;
+.intro {
+    margin-left: 21%;
+    width: 70%;
+    top: 10px;
+    padding: 50px;
+    font-size: 75px;
+    position: relative;
+    background-color: #C39FB7;
+    border-radius: 5px;
 }
-.navbar > a > .logo {
-	display: inline-flex;
-	padding: 15px;
-	margin-left: 5px;
-	border-radius: 15px;
-	padding-left: 25px;
-	padding-right: 25px;
-	background-color: #1C1B1C;
-}
-.navbar > a {
-	text-align: center;
-	text-decoration: none;
-}
-.navbar > .navbtn:hover {
-	width: 250px;
-	cursor: pointer;
-	background-color: #3a3a3a;
-}
-.navbar > .panel {
-	background-color: rgba(15, 15, 15, 0.5);
-	backdrop-filter: blur(8px);
-	width: 100%;
-	text-align: left;
-	height: 100vh;
-	display: block;
-	position: absolute;
-	border-radius: 0px;
-	margin-top: 59px;
-	display: block;
-	transition: 2s ease;
-	transform: translate(-2500px);
-}
-.navbar:has(.navbtn:hover) > .panel {
-	transform: translate(4px);
-	display: block;
-	box-shadow: 0px 0px 50px 20px #212121;
-}
-.navbar > .design:nth-of-type(3){
-	margin-left: 100px;
-	background-color: #363636;
-}
-.navbar > .design:nth-of-type(4){
-	background-color: #151516;
-}
-.navbar > .design:nth-of-type(5){
-	background-color: #050506;
-}
-.navbar > .design:nth-of-type(6){
-	background-color: #3A3A3A;
-}
-.navbar > .design:nth-of-type(7){
-	background-color: #5A5A5A;
-}
-.navbar > .design:nth-of-type(8){
-	background-color: #212121;
-}
-.navbar > .panel:hover {
-	display: block;
-	transform: translate(4px);
-	box-shadow: 0px 0px 55px 20px #212121;
-}
-.navbar > .panel > a > div:hover {
-	cursor: pointer;
-	display: inline-flex;
-	justify-content: left;
-	align-items: left;
-	background-color: #252526;
-}
-.navbar > .panel > a {
-	text-align: left;
-	display: flex;
-	justify-content: left;
-	text-decoration: none;
-	align-items: left;
-}
-.navbar > .panel > a > div {
-	padding: 25px;
-	width: 100%;
-	background-color: #1C1B1C;
-	margin: 0 auto;
-	transition: 0.5s ease;
-}
-/*   	This is the section related to the long bar things	*/
-/*	Start the container holding all the bars	*/
-.Container2 {
-    width: 75%;
+.intro::before {
+    content: ".";
+    color: transparent;
+    background: linear-gradient(45deg, #DAB2CC, #90758D 50%);
     border-radius: 25px;
+    margin-right: 50px;
+    width: 20px;
+    height: 100px;
+}
+.headers {
+    margin-left: 20%;
+    font-size: 50px;
+    padding: 25px;
+    position: relative;
+}
+.headers::before{
+    content: '.';
+    color: transparent;
+    height: 150px;
+    position: absolute;
+    margin-right: 25px;
+    width: 25px;
+    background: linear-gradient(45deg, #BB9FC2, #90758D, #FFDDFF);
+}
+.abt {
     display: flex;
-    margin: 25px;
-    height: 750px;
+    margin-left: 22%;
+    margin-top: 100px;
 }
-.Container2 > div {
-	width: 25%;
-	padding-right: 5px;
+.abt div {
+    background-color: #C29EB6;
+    width: 200px;
+    font-size: 20px;
+    padding: 25px;
+    margin-right: 5px;
+    border-radius: 25px;
+    display: inline-block;
 }
-.Container2 > div > h1{
-	margin-left: 25px;
+.abt div:nth-child(2){
+    background-color: #B995AC;
 }
-/* The arrow config starts here here -> */
-.Container2 > div > div {
-	width: 0px;
-	height: 0px;
-	margin-left: 25px;
-	margin-top: 5px;
-	transition: 2s ease;
-	border-top: 15px solid transparent;
-	border-left: 25px solid white;
-	border-bottom: 15px solid transparent;
+.abt div:nth-child(3){
+    background-color: #AF8CA2;
 }
-.Container2 > div > div:hover {
-	transform: rotate(90deg);
-	cursor: pointer;
+.abt div:nth-child(4){
+    background-color: #A68399;
 }
-.Container2 > div > h1,p {
-	margin-left: 25px;
+.abtdev {
+    margin-left: 20%;
+    padding: 25px;
+    margin-top: 75px;
+    font-size: 18px;
 }
-/* <- The arrow config ends here */
-/*	End the container holding all the bars	*/
-
-/*	This is the section related to each containers in the bar thing	*/
-/*	Start individual bar section	*/
-.Container2 > div:nth-child(1){
-	background-color: #202020;
-	width: 3%;
-	transition: 2s ease;
-	padding-right: 25px;
-	overflow: hidden;
+ul {
+    margin-left: 21%;
+    margin-top: 75px;
+    padding: 25px;
+    border-radius: 15px;
+    width: 75%;
+    background-color: #BB9FC2;
+    list-style-type: none;
 }
-.Container2 > div:nth-child(2){
-	background-color: #3A3A3A;
-	transition: 2s ease;
-	width: 5%;
-	overflow: hidden;
+li {
+    padding: 25px;
+    font-weight: bold;
+    font-size: 25px;
 }
-.Container2 > div:nth-child(3){
-	background-color: #434343;
-	transition: 2s ease;
-	width: 5%;
-	overflow: hidden;
+li::before {
+    content: '> ';
+    font-weight: 1000;
 }
-.Container2 > div:nth-child(4){
-	background-color: #5C5C5C;
-	transition: 2s ease;
-	width: 5%;
-	overflow: hidden;
-}
-
-/*	End individual bar section	*/
-
-/*	Start bar 1 configuration	*/
-
-.Container2 > div:nth-child(1) > h1 {
-	transition: 2s ease;
-	transform: translate(-130px);
-}
-.Container2 > div:nth-child(1) > p {
-	transition: 2s ease;
-	transition-delay: 0.5s;
-	transform: translate(-330px);
-}
-.Container2 > div:nth-child(1):has(div:hover) {
-	width: 25%;
-}
-.Container2 > div:nth-child(1):not(:has(div:hover)) {
-	transition-delay: 0.5s;
-}
-.Container2 > div:nth-child(1):has(div:hover) > h1 {
-	transform: translate(4px);
-}
-.Container2 > div:nth-child(1):has(div:hover) > p {
-	transform: translate(4px);
-}
-
-/*	End bar 1 configuration		*/
-
-/*	Start bar 2 configuration	*/
-.Container2 > div:nth-child(2) > h1 {
-	transition: 2s ease;
-	transform: translate(-215px);
-}
-.Container2 > div:nth-child(2) > ul {
-	transform: translate(-355px);
-}
-.Container2 > div:nth-child(2):has(div:hover) {
-	width: 25%;
-	padding-right: 30px;
-}
-.Container2 > div:nth-child(2):not(:has(div:hover)) {
-	transition-delay: 2s;
-}
-.Container2 > div:nth-child(2):has(div:hover) > h1 {
-	transform: translate(4px);
-}
-.Container2 > div:nth-child(2) > ul:nth-of-type(1){
-	transition: 1s ease;
-	transition-delay: 0.5s;
-}
-.Container2 > div:nth-child(2) > ul:nth-of-type(2){
-	transition: 1s ease;
-	transition-delay: 1s;
-}
-.Container2 > div:nth-child(2) > ul:nth-of-type(3){
-	transition: 1s ease;
-	transition-delay: 1.5s;
-}
-.Container2 > div:nth-child(2) > ul:nth-of-type(4){
-	transition: 1s ease;
-	transition-delay: 2s;
-}
-.Container2 > div:nth-child(2):has(div:hover) > ul:nth-of-type(1) {
-	transform: translate(4px);
-}
-.Container2 > div:nth-child(2):has(div:hover) > ul:nth-of-type(2) {
-	transform: translate(4px);
-}
-.Container2 > div:nth-child(2):has(div:hover) > ul:nth-of-type(3) {
-	transform: translate(4px);
-}
-.Container2 > div:nth-child(2):has(div:hover) > ul:nth-of-type(4) {
-	transform: translate(4px);
-}
-.Container2 > div:nth-child(2) > ul > li{
-	list-style-type: disc;
-	margin-top: 25px;
-}
-/*	End bar 2 configuration		*/
-
-/*	Start bar 3 configuration	*/
-.Container2 > div:nth-child(3) > h1 {
-	transition: 2s ease;
-	transform: translate(-210px);
-}
-.Container2 > div:nth-child(3) > p {
-	transition: 2s ease;
-	transition-delay: 0.5s;
-	transform: translate(-330px);
-}
-.Container2 > div:nth-child(3):has(div:hover) {
-	width: 25%;
-	padding-right: 15px;
-}
-.Container2 > div:nth-child(3):not(:has(div:hover)) {
-	transition-delay: 0.5s;
-}
-.Container2 > div:nth-child(3):has(div:hover) > h1 {
-	transform: translate(4px);
-}
-.Container2 > div:nth-child(3):has(div:hover) > p {
-	transform: translate(4px);
-}
-/*	End bar 3 configuration		*/
-
-/*	Start bar 4 configuration	*/
-.Container2 > div:nth-child(4) > h1 {
-	transition: 2s ease;
-	color: white;
-	transform: translate(-210px);
-}
-.Container2 > div:nth-child(4) > p {
-	transition: 2s ease;
-	transition-delay: 0.5s;
-	transform: translate(-330px);
-}
-.Container2 > div:nth-child(4):has(div:hover) {
-	width: 25%;
-	padding-right: 25px;
-}
-.Container2 > div:nth-child(4):not(:has(div:hover)) {
-	transition-delay: 0.5s;
-}
-.Container2 > div:nth-child(4):has(div:hover) > h1 {
-	transform: translate(4px);
-}
-.Container2 > div:nth-child(4):has(div:hover) > p {
-	transform: translate(4px);
-}
-/*	End bar 4 configuration		*/
-/*	Start bar 5 (about) configuration	*/
-.Container2 > .about {
-	background-color: #212121;
-	width: 100%;
-	overflow: scroll;
-}
-.Container2 > .about > * {
-	margin-left: 15px;
-}
-/*	End bar 5 (about) configuration		*/
