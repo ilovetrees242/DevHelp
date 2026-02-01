@@ -2,23 +2,24 @@
 MOONPKGNAME="which"
 MOONPKGVERSION="2.23"
 MOONPKG="$MOONPKGNAME-$MOONPKGVERSION"
-MOONPKGREPO="https://ilovetrees242.github.io/DevHelp/Website/Packages"
 DEPENDS="bash glibc"
 BUILDSCRIPTPID=""
 case $1 in
 	chkdeps)
-        $(echo $DEPENDS | awk '{print $1}') --version
+        echo -e "${YELLOW}Checking for dependencies...${NC}"
+        $(echo $DEPENDS | awk '{print $1}') --version &> /dev/null
 		if [ $? -ne 127 ]; then
-            echo "${YELLOW}Dependency ${ORANGE}$(echo $DEPENDS | awk '{print $1}')${YELLOW} not found!${NC}"
+            echo -e "${YELLOW}Dependency ${ORANGE}$(echo $DEPENDS | awk '{print $1}')${YELLOW} not found!${NC}"
 			exit 1
 		fi
         if [ $(echo $DEPENDS | awk '${print $2}') == "glibc" ]; 
-            then ldd --version; 
+            then ldd --version &> /dev/null 
 		    if [ $? -eq 127 ]; then
-                echo "${YELLOW}Dependency ${ORANGE}$(echo $DEPENDS | awk '{print $2}')${YELLOW} not found!${NC}"
+                echo -e "${YELLOW}Dependency ${ORANGE}$(echo $DEPENDS | awk '{print $2}')${YELLOW} not found!${NC}"
     			exit 1
 	    	fi
         fi
+        echo -e "${YELLOW}Dependencies met!${NC}"
 	;;
 	build)
         if [ "$VEILERQUIET" -eq 0 ]; then
