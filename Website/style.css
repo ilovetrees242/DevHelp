@@ -11,7 +11,9 @@ body {
     width: 20%;
     height: 100%;
     position: fixed;
-    overflow: auto;
+    overflow: hidden;
+    border-image: linear-gradient(to top, #151414 0%, #BB9FC2 100%) 1; 
+    border-right: 4px solid;
 } 
 .nav div {
     background-color: #B292AC;
@@ -24,7 +26,7 @@ body {
     position: absolute;
     width: 100%;
 }
-.nav a {
+.nav a:not(:nth-child(4)) {
     text-decoration: none;
     display: block;
     text-align: center;
@@ -37,6 +39,18 @@ body {
 .nav a:hover{
     background-color: #C8A3BC;
     background-position: 0px;
+}
+.nav a:nth-of-type(4) {
+    background-color: #BB9FC2;
+    padding: 25px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 1s ease-in-out;
+}
+.nav a:nth-of-type(4):hover {
+    background-color: #BE9BB2;
 }
 .intro {
     margin-left: 21%;
@@ -78,6 +92,7 @@ body {
     margin-top: 100px;
 }
 .abt div {
+    transition: 1s ease-in-out;
     background-color: #C29EB6;
     width: 200px;
     font-size: 20px;
@@ -94,6 +109,29 @@ body {
 }
 .abt div:nth-child(4){
     background-color: #A68399;
+}
+.abt div:nth-child(1):hover {
+    padding: 50px;
+    box-shadow: 0px 0px 55px 25px #C29EB6;
+    margin-right: 10px;
+}
+.abt div:nth-child(2):hover {
+    padding: 50px;
+    box-shadow: 0px 0px 55px 25px #B995Ac;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.abt div:nth-child(3):hover {
+    padding: 50px;
+    box-shadow: 0px 0px 55px 25px #AF8CA2;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.abt div:nth-child(4):hover {
+    padding: 50px;
+    box-shadow: 0px 0px 55px 25px #A68399;
+    margin-right: 10px;
+    margin-left: 10px;
 }
 .abtdev {
     margin-left: 20%;

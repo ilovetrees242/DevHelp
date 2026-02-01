@@ -6,104 +6,44 @@ body{
     font-weight: lighter;
     background-color: #161515;
 }
-html {
-    scroll-behaviour: smooth;
-}
 *{
-	font-weight: bold;
-	color: white;
+    margin: 0;
+    color: #EED8E5;
+    font-family: "SN Pro";
 }
-.navbar{
-	color: white;
-	position: sticky;
-	top: 0;
-	width: 100%;
-	border-radius: 10px;
-	background-color: #ECE6E9;
-    padding-bottom: 5px;
-	box-shadow: 0px 0px 5px 5px #151516;
-	text-align: left;
-    transition: 2s ease;
+.nav {
+    background-color: #212121;
+    width: 20%;
+    height: 100%;
+    position: fixed;
+    overflow: hidden;
+    border-image: linear-gradient(to top, #151414 0%, #BB9FC2 100%) 1; 
+    border-right: 4px solid;
+} 
+.nav div {
+    background-color: #B292AC;
 }
-.navbar > .navbtn {
-	background-color: #1C1B1C;
-	display: inline-flex;
-	width: 150px;
-	justify-content: center;
-	align-items: center;
-	transition: 2s ease;
-	border-radius: 15px;
-	padding: 15px;
-	margin-top: 5px;
+.nav div h1 {
+    bottom: 0;
+    padding: 25px;
+    color: #E6ECE6;
+    background: linear-gradient(45deg, #050505, #8C7289);
+    position: absolute;
+    width: 100%;
 }
-.navbar > a > .logo {
-	display: inline-flex;
-	padding: 15px;
-	margin-left: 5px;
-	border-radius: 15px;
-	padding-left: 25px;
-	padding-right: 25px;
-	background-color: #1C1B1C;
+.nav a {
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    padding: 25px;
+    background: linear-gradient(45deg, #ffddff 0%, #050505 50%);
+    background-size: 1000px;
+    background-position: -500px;
+    transition: 1s ease-in-out;
 }
-.navbar > a {
-	text-align: center;
-	text-decoration: none;
-}
-.navbar > .navbtn:hover {
-	width: 250px;
-	cursor: pointer;
-	background-color: #2C2B2C;
-}
-.navbar > .panel {
-	background-color: rgba(15, 15, 15, 0.5);
-	backdrop-filter: blur(8px);
-	width: 100%;
-	text-align: left;
-	height: 100vh;
-	display: block;
-	position: absolute;
-	border-radius: 0px;
-	margin-top: 65px;
-	display: block;
-	transition: 2s ease;
-	transform: translate(-2480px);
-}
-.navbar:has(.navbtn:hover) {
-    border-radius: 0px;
-}
-.navbar:has(.panel:hover) {
-    border-radius: 0px;
-}
-.navbar:has(.navbtn:hover) > .panel {
-	transform: translate(0px);
-	display: block;
-	box-shadow: 0px 0px 50px 20px #212121;
-}
-.navbar > .panel:hover {
-	display: block;
-	transform: translate(0px);
-	box-shadow: 0px 0px 55px 20px #212121;
-}
-.navbar > .panel > a > div:hover {
-	cursor: pointer;
-	display: inline-flex;
-	justify-content: left;
-	align-items: left;
-	background-color: #252526;
-}
-.navbar > .panel > a {
-	text-align: left;
-	display: flex;
-	justify-content: left;
-	text-decoration: none;
-	align-items: left;
-}
-.navbar > .panel > a > div {
-	padding: 25px;
-	width: 100%;
-	background-color: #1C1B1C;
-	margin: 0 auto;
-	transition: 0.5s ease;
+.nav a:hover{
+    background-color: #C8A3BC;
+    background-position: 0px;
 }
 .reponame {
 	font-size: 85px;
