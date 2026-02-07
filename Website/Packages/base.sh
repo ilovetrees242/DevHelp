@@ -1,3 +1,4 @@
+cat > MOONBUILD << "EOF"
 #!/bin/bash
 MOONPKGNAME="which"
 MOONPKGVERSION="2.23"
@@ -35,7 +36,7 @@ case $1 in
                 exit 1
             fi
             md5sum -c integrity.md5
-            if [ "$?" -eq 0 ]; then echo -e "${WHITE}Package integrity verified!${NC}"
+            if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package integrity verified!${NC}"
             else
                 echo -e "${ORANGE}Integrity not verified. Not building the package.${NC}"
                 rm -f "$MOONPKG.tar.gz"
@@ -67,7 +68,7 @@ case $1 in
             wget "$SRC/$MOONPKG.tar.gz" &> /dev/null
             trap 'echo "${ORANGE}An error was encountered while downloading the package.${NC}; kill $BUILDSCRIPTPID"' ERR; set +e
             trap - ERR
-            kill $BUILDSCRIPTPID; echo -e "\n${WHITE}Done!, now verifying package integrity."
+            kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!, now verifying package integrity."
             md5sum -c integrity.md5 
             if [ "$?" -eq 0 ]; then echo -e "${WHITE}Package integrity verified!${NC}"
             else
@@ -85,7 +86,7 @@ case $1 in
             BUILDSCRIPTPID="$!"
             tar xf $MOONPKG.tar.?z 
             trap 'echo -e "${YELLOW}Failed to extract the package.${NC}"' ERR
-            kill $BUILDSCRIPTPID; echo -e "\n${WHITE}Done!"
+            kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!"
             echo -e "${YELLOW}Entering build enviroment...${NC}"; sleep 0.2
 		    pushd $MOONPKG &> /dev/null && echo -e "${WHITE}->Done!${NC}"
                 while true; do
@@ -97,7 +98,7 @@ case $1 in
                 BUILDSCRIPTPID="$!"
                 ./configure --prefix=/usr &> /dev/null 
                 trap 'echo -e "${YELLOW}Failed to configure the package.${NC}"' ERR
-                kill $BUILDSCRIPTPID; echo -e "\n${WHITE}Done!${NC}"
+                kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
                 while true; do
                     echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}   ${NC}"; sleep 0.2
                     echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}.  ${NC}"; sleep 0.2
@@ -123,7 +124,8 @@ case $1 in
                 make install && echo -e "${WHITE}->Done!${NC}"
             popd
             echo -e "${YELLOW}Cleaning up...${NC}"; sleep 0.2
-            rm -rfv $MOONPKG $MOONPKG.* && echo -e "${WHITE}->Done!${NC}"
+            clean 
+            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"'
             set +e
         else
             while true; do
@@ -134,7 +136,7 @@ case $1 in
             done &
             BUILDSCRIPTPID="$!"
             pushd $MOONPKG &> /dev/null
-            make install 
+            make install &> /dev/null
             if [ "$?" -ne 0 ]; then echo -e "${YELLOW}Could not install the package.${NC}"; exit 1; kill $BUILDSCRIPTPID; 
             else
                 kill $BUILDSCRIPTPID
@@ -147,9 +149,9 @@ case $1 in
                 echo -ne "\r${YELLOW}Cleaning up...${NC}"; sleep 0.2
             done &
             BUILDSCRIPTPID="$!"
-            popd
+            popd &> /dev/null
             clean &> /dev/null
-            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID exit 1"' ERR
+            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
             kill $BUILDSCRIPTPID
         fi
         trap - ERR
@@ -157,7 +159,7 @@ case $1 in
 	uninstall)
         if [ $VEILERQUIET -eq 1 ]; then
             set -e 
-            trap
+            trap 'echo -e "${ORANGE}An error was encountered while uninstalling! Manual intervention required.${NC}"' ERR
             while true; do
                 echo -ne "\r${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}   "; sleep 0.2
                 echo -ne "\r${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}.  "; sleep 0.2
@@ -168,6 +170,7 @@ case $1 in
 		    rm /usr/bin/which
 		    rm -rf /usr/share/man/man1/which.1 && kill "$BUILDSCRIPTPID" && echo -e "\n${WHITE}->Done!${NC}"
             set +e 
+            trap - ERR
         else
             echo -ne "${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}..."
             rm /usr/bin/which
@@ -175,3 +178,5 @@ case $1 in
         fi
 	;;
 esac
+EOF
+echo "Successfuly installed a MOONBUILD build script"
