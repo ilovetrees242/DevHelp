@@ -1,4 +1,3 @@
-cat > MOONBUILD << "EOF"
 #!/bin/bash
 MOONPKGNAME="which"
 MOONPKGVERSION="2.23"
@@ -176,4 +175,3 @@ case $1 in
         fi
 	;;
 esac
-EOF
