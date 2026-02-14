@@ -153,7 +153,8 @@ case $1 in
         trap - ERR
     ;;
 	uninstall)
-        echo -e "${ORANGE}Verifying package integrity...${NC}"
+        sed -i '1d' integrity.md5
+        echo -e "${ORANGE}Verifying script integrity...${NC}"
         md5sum -c integrity.md5
         if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package integrity verified!${NC}"
         else
