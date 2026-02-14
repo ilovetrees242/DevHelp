@@ -1,11 +1,9 @@
 #!/bin/bash
-cat > MOONBUILD << "EOF"
-#!/bin/bash
-MOONPKGNAME="neofetch"
-MOONPKGVERSION="7.1.0"
+MOONPKGNAME="bash"
+MOONPKGVERSION="5.3"
 MOONPKG="$MOONPKGNAME-$MOONPKGVERSION"
-SRC="https://github.com/dylanaraps/neofetch/archive/refs/tags/"
-DEPENDS="bash glibc"
+SRC="https://ftp.gnu.org/gnu/bash"
+DEPENDS="glibc ncurses readline"
 BUILDSCRIPTPID=""
 clean() {
    rm -rfv "$MOONPKG.tar.gz" "$MOONPKG.tar.gz.*" "$MOONPKG" 
@@ -156,14 +154,6 @@ case $1 in
         trap - ERR
     ;;
 	uninstall)
-        echo -e "${ORANGE}Verifying package integrity.${NC}"
-        md5sum -c integrity.md5
-        if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package integrity verified!${NC}"
-        else
-            echo -e "${ORANGE}Integrity not verified. Not uninstalling the package.${NC}"
-            rm -f "$MOONPKG.tar.gz"
-            exit 1 
-        fi
         if [ $VEILERQUIET -eq 1 ]; then
             set -e 
             trap 'kill $BUILDSCRIPTPID; echo -e "${ORANGE}An error was encountered while uninstalling! Manual intervention required.${NC}"' ERR
@@ -190,4 +180,3 @@ case $1 in
         fi
 	;;
 esac
-EOF
