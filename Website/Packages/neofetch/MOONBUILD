@@ -1,14 +1,14 @@
 #!/bin/bash
-MOONPKGNAME="bash"
-MOONPKGVERSION="5.3"
+MOONPKGNAME="neofetch"
+MOONPKGVERSION="7.1.0"
 MOONPKG="$MOONPKGNAME-$MOONPKGVERSION"
-SRC="https://ftp.gnu.org/gnu/bash"
-DEPENDS="glibc ncurses readline"
+SRC="https://github.com/dylanaraps/neofetch/archive/refs/tags/"
+DEPENDS="bash glibc"
 BUILDSCRIPTPID=""
 clean() {
    rm -rfv "$MOONPKG.tar.gz" "$MOONPKG.tar.gz.*" "$MOONPKG" 
 }
-trap 'echo -e "${YELLOW}Interrupted.${NC}"; clean' ERR
+trap 'echo -e "${YELLOW}Interrupted.${NC}"; clean' INT
 case $1 in
 	chkdeps)
         echo -e "${YELLOW}Checking for dependencies...${NC}"
@@ -63,7 +63,7 @@ case $1 in
                 echo -ne "\r${ORANGE}Downloading the package source tarball...${NC}"; sleep 0.2
             done &
             BUILDSCRIPTPID="$!"
-            wget "$SRC/$MOONPKG.tar.gz" &> /dev/null
+            wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz" &> /dev/null
             trap 'echo "${ORANGE}An error was encountered while downloading the package.${NC}; kill $BUILDSCRIPTPID"' ERR; set +e
             trap - ERR
             kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!, now verifying package integrity."
@@ -119,10 +119,9 @@ case $1 in
             echo -e "${YELLOW}Installing ${WHITE}${MOONPKGNAME}...${NC}"; sleep 0.2
             pushd $MOONPKG
                 make PREFIX=/usr install && echo -e "${WHITE}->Done!${NC}"
-            popd
             echo -e "${YELLOW}Cleaning up...${NC}"; sleep 0.2
             clean 
-            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
+            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID"' ERR
             set +e
         else
             while true; do
@@ -149,7 +148,7 @@ case $1 in
             popd &> /dev/null
             clean &> /dev/null
             trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
-            echo "\n${WHITE}Done!"; kill $BUILDSCRIPTPID
+            echo -e "\n${WHITE}Done!"; kill $BUILDSCRIPTPID
         fi
         trap - ERR
     ;;
@@ -157,9 +156,9 @@ case $1 in
         sed -i '1d' integrity.md5
         echo -e "${ORANGE}Verifying script integrity...${NC}"
         md5sum -c integrity.md5
-        if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Script integrity verified!${NC}"
+        if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package integrity verified!${NC}"
         else
-        echo -e "${ORANGE}Integrity not verified. Not building the package.${NC}"
+            echo -e "${ORANGE}Integrity not verified. Not uninstalling the package.${NC}"
             rm -f "$MOONPKG.tar.gz"
             exit 1 
         fi
