@@ -1,16 +1,17 @@
-#!/bin/bash
 cat > MOONBUILD << "EOF"
 #!/bin/bash
-MOONPKGNAME="neofetch"
-MOONPKGVERSION="7.1.0"
+MOONPKGNAME=""
+MOONPKGVERSION=""
 MOONPKG="$MOONPKGNAME-$MOONPKGVERSION"
-SRC="https://github.com/dylanaraps/neofetch/archive/refs/tags/"
-DEPENDS="bash glibc"
+SRC="https://"
+DEPENDS=""
 BUILDSCRIPTPID=""
+INSTALLEDVER="$(cat /var/db/Veiler/package.db | grep $MOONPKGNAME | awk '{print $3}')"
+
 clean() {
    rm -rfv "$MOONPKG.tar.gz" "$MOONPKG.tar.gz.*" "$MOONPKG" 
 }
-trap 'echo -e "${YELLOW}Interrupted.${NC}"; clean' ERR
+trap 'echo -e "${YELLOW}Interrupted.${NC}"; clean' INT
 case $1 in
 	chkdeps)
         echo -e "${YELLOW}Checking for dependencies...${NC}"
@@ -28,6 +29,15 @@ case $1 in
         echo -e "${YELLOW}Dependencies met!${NC}"
 	;;
 	build)
+        echo -e "${YELLOW}Checking if package is already installed...${NC}"; touch compare.txt
+        echo "$MOONPKGVERSION" > compare.txt
+        echo "$INSTALLEDVER" >> compare.txt
+        if [ $(sort -Vr compare.txt | head -n1 | tail -n1) != "$INSTALLEDVER" ]; then
+            echo -e "${WHITE}This is a new version, ${YELLOW}$MOONPKGVERSION${NC}"
+            echo -e "${WHITE}Installed version is ${YELLOW}$INSTALLEDVER${WHITE}. Would you like to proceed installing this new version?${NC}"
+        else
+            echo -e "${YELLOW}Package is already installed!${NC}"
+        fi
         if [ "$VEILERQUIET" -eq 0 ]; then
             wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz"
             if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package downloaded successfully.${NC}"; echo -e "${YELLOW}Now verifying package integrity.${NC}" 
@@ -65,10 +75,10 @@ case $1 in
                 echo -ne "\r${ORANGE}Downloading the package source tarball...${NC}"; sleep 0.2
             done &
             BUILDSCRIPTPID="$!"
-            wget "$SRC/$MOONPKG.tar.gz" &> /dev/null
+            wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz" &> /dev/null
             trap 'echo "${ORANGE}An error was encountered while downloading the package.${NC}; kill $BUILDSCRIPTPID"' ERR; set +e
             trap - ERR
-            kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!, now verifying package integrity."
+            kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!, now verifying package integrity.${YELLOW}"
             md5sum -c integrity.md5 
             if [ "$?" -eq 0 ]; then echo -e "${WHITE}Package integrity verified!${NC}"
             else
@@ -108,7 +118,7 @@ case $1 in
                 BUILDSCRIPTPID="$!"
                 sleep 1
                 trap 'kill $BUILDSCRIPTPID; echo -e "${YELLOW}Failed to build the package.${NC}"' ERR
-                kill $BUILDSCRIPTPID; echo -e "\n${WHITE}Done!"
+                kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
             popd &> /dev/null
             set +e
             echo -e "${WHITE}Successfuly built ${YELLOW}$MOONPKGNAME${NC}"
@@ -121,10 +131,9 @@ case $1 in
             echo -e "${YELLOW}Installing ${WHITE}${MOONPKGNAME}...${NC}"; sleep 0.2
             pushd $MOONPKG
                 make PREFIX=/usr install && echo -e "${WHITE}->Done!${NC}"
-            popd
             echo -e "${YELLOW}Cleaning up...${NC}"; sleep 0.2
             clean 
-            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
+            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID"' ERR
             set +e
         else
             while true; do
@@ -139,7 +148,7 @@ case $1 in
             if [ "$?" -ne 0 ]; then echo -e "${YELLOW}Could not install the package.${NC}"; exit 1; kill $BUILDSCRIPTPID; 
             else
                 kill $BUILDSCRIPTPID
-                echo -e "${WHITE}Done!${NC}"
+                echo -e "${WHITE}->Done!${NC}"
             fi
             while true; do
                 echo -ne "\r${YELLOW}Cleaning up   ${NC}"; sleep 0.2
@@ -151,12 +160,13 @@ case $1 in
             popd &> /dev/null
             clean &> /dev/null
             trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
-            echo "\n${WHITE}Done!"; kill $BUILDSCRIPTPID
+            echo -e "\n${WHITE}->Done!${NC}"; kill $BUILDSCRIPTPID
         fi
         trap - ERR
     ;;
 	uninstall)
-        echo -e "${ORANGE}Verifying package integrity.${NC}"
+        sed -i '1d' integrity.md5
+        echo -e "${ORANGE}Verifying script integrity...${NC}"
         md5sum -c integrity.md5
         if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package integrity verified!${NC}"
         else
