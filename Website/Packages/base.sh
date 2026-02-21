@@ -34,7 +34,12 @@ case $1 in
         echo "$INSTALLEDVER" >> compare.txt
         if [ $(sort -Vr compare.txt | head -n1 | tail -n1) != "$INSTALLEDVER" ]; then
             echo -e "${WHITE}This is a new version, ${YELLOW}$MOONPKGVERSION${NC}"
-            read -n 1 -p "${WHITE}Installed version is ${YELLOW}$INSTALLEDVER${WHITE}. Would you like to proceed installing this new version?[y/n]: ${NC}"
+            echo -ne "${WHITE}Installed version is ${YELLOW}$INSTALLEDVER${WHITE}. Would you like to proceed installing this new version?[y/n]: ${NC}"
+            read -n 1
+            if [[ $REPLY != "n" && $REPLY != "y" ]]; then
+                echo -e "${YELLOW}Not a valid choice!${NC}"
+                exit 1
+            fi
             if [ $REPLY == "n" ]; then
                 echo -e "${WHITE}OK${NC}"
                 exit 0
