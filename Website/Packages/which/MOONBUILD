@@ -1,17 +1,16 @@
-cat > MOONBUILD << "EOF"
 #!/bin/bash
-MOONPKGNAME=""
-MOONPKGVERSION=""
+MOONPKGNAME="which"
+MOONPKGVERSION="2.23"
 MOONPKG="$MOONPKGNAME-$MOONPKGVERSION"
-SRC="https://"
-DEPENDS=""
+SRC="https://ftp.gnu.org/gnu/which/"
+DEPENDS="bash glibc"
 BUILDSCRIPTPID=""
 INSTALLEDVER="$(cat /var/db/Veiler/package.db | grep $MOONPKGNAME | awk '{print $3}')"
 
 clean() {
    rm -rfv "$MOONPKG.tar.gz" "$MOONPKG.tar.gz.*" "$MOONPKG" 
 }
-trap 'echo -e "${YELLOW}Interrupted.${NC}"; clean' INT
+trap 'echo -e "${YELLOW}Interrupted.${NC}"' INT
 case $1 in
 	chkdeps)
         echo -e "${YELLOW}Checking for dependencies...${NC}"
@@ -34,14 +33,11 @@ case $1 in
         echo "$INSTALLEDVER" >> compare.txt
         if [ $(sort -Vr compare.txt | head -n1 | tail -n1) != "$INSTALLEDVER" ]; then
             echo -e "${WHITE}This is a new version, ${YELLOW}$MOONPKGVERSION${NC}"
-            read -n 1 -p "${WHITE}Installed version is ${YELLOW}$INSTALLEDVER${WHITE}. Would you like to proceed installing this new version?[y/n]: ${NC}"
-            if [ $REPLY == "n" ]; then
-                echo -e "${WHITE}OK${NC}"
-                exit 0
-            fi
+            read -n 1 -p "${WHITE}Installed version is ${YELLOW}$INSTALLEDVER${WHITE}. Would you like to proceed installing this new version?${NC}"
+        else
+            echo -e "${YELLOW}Package is already installed!${NC}"
         fi
         if [ "$VEILERQUIET" -eq 0 ]; then
-            echo -e "${YELLOW}Downloading the package source tarball${NC}"
             wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz"
             if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package downloaded successfully.${NC}"; echo -e "${YELLOW}Now verifying package integrity.${NC}" 
             else
@@ -203,4 +199,3 @@ case $1 in
         fi
 	;;
 esac
-EOF

@@ -1,10 +1,9 @@
-cat > MOONBUILD << "EOF"
 #!/bin/bash
-MOONPKGNAME=""
-MOONPKGVERSION=""
+MOONPKGNAME="neofetch"
+MOONPKGVERSION="7.1.0"
 MOONPKG="$MOONPKGNAME-$MOONPKGVERSION"
-SRC="https://"
-DEPENDS=""
+SRC="https://github.com/dylanaraps/neofetch/archive/refs/tags/"
+DEPENDS="bash glibc"
 BUILDSCRIPTPID=""
 INSTALLEDVER="$(cat /var/db/Veiler/package.db | grep $MOONPKGNAME | awk '{print $3}')"
 
@@ -34,14 +33,14 @@ case $1 in
         echo "$INSTALLEDVER" >> compare.txt
         if [ $(sort -Vr compare.txt | head -n1 | tail -n1) != "$INSTALLEDVER" ]; then
             echo -e "${WHITE}This is a new version, ${YELLOW}$MOONPKGVERSION${NC}"
-            read -n 1 -p "${WHITE}Installed version is ${YELLOW}$INSTALLEDVER${WHITE}. Would you like to proceed installing this new version?[y/n]: ${NC}"
+            read -p -n 1 "${WHITE}Installed version is ${YELLOW}$INSTALLEDVER${WHITE}. Would you like to proceed installing this new version?[y/n]: ${NC}"
             if [ $REPLY == "n" ]; then
-                echo -e "${WHITE}OK${NC}"
+                echo -e "${WHITE}Ok.${NC}"
                 exit 0
             fi
         fi
         if [ "$VEILERQUIET" -eq 0 ]; then
-            echo -e "${YELLOW}Downloading the package source tarball${NC}"
+            echo -e "${YELLOW}Downloading the package source...${NC}"
             wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz"
             if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package downloaded successfully.${NC}"; echo -e "${YELLOW}Now verifying package integrity.${NC}" 
             else
@@ -99,7 +98,7 @@ case $1 in
             BUILDSCRIPTPID="$!"
             tar xf $MOONPKG.tar.?z
             trap 'kill $BUILDSCRIPTPID echo -e "${YELLOW}Failed to extract the package.${NC}"' ERR
-            kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!"
+            kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
             echo -e "${YELLOW}Entering build enviroment...${NC}"; sleep 0.2
 		    pushd $MOONPKG &> /dev/null && echo -e "${WHITE}->Done!${NC}"
                 while true; do
@@ -151,7 +150,7 @@ case $1 in
             if [ "$?" -ne 0 ]; then echo -e "${YELLOW}Could not install the package.${NC}"; exit 1; kill $BUILDSCRIPTPID; 
             else
                 kill $BUILDSCRIPTPID
-                echo -e "${WHITE}->Done!${NC}"
+                echo -e "\n${WHITE}->Done!${NC}"
             fi
             while true; do
                 echo -ne "\r${YELLOW}Cleaning up   ${NC}"; sleep 0.2
@@ -163,7 +162,7 @@ case $1 in
             popd &> /dev/null
             clean &> /dev/null
             trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
-            echo -e "\n${WHITE}->Done!${NC}"; kill $BUILDSCRIPTPID
+            echo -e "\n${WHITE}->Done!"; kill $BUILDSCRIPTPID
         fi
         trap - ERR
     ;;
@@ -203,4 +202,3 @@ case $1 in
         fi
 	;;
 esac
-EOF
