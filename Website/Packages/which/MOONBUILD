@@ -33,11 +33,22 @@ case $1 in
         echo "$INSTALLEDVER" >> compare.txt
         if [ $(sort -Vr compare.txt | head -n1 | tail -n1) != "$INSTALLEDVER" ]; then
             echo -e "${WHITE}This is a new version, ${YELLOW}$MOONPKGVERSION${NC}"
-            read -n 1 -p "${WHITE}Installed version is ${YELLOW}$INSTALLEDVER${WHITE}. Would you like to proceed installing this new version?${NC}"
+            echo -e "${WHITE}Installed version is ${YELLOW}$INSTALLEDVER${WHITE}. Would you like to proceed installing this new version?[y/n]: "
+            read -n 1
+            if [[ $REPLY != "n" && $REPLY != "y" ]]; then
+                echo -e "\n${YELLOW}Not a valid choice!${NC}"
+                exit 1
+            fi
+            if [ $REPLY == "n" ]; then
+                echo -e "${WHITE}OK${NC}"
+                exit 0
+            fi
         else
-            echo -e "${YELLOW}Package is already installed!${NC}"
+            echo -e "${YELLOW}Package is already installed.${NC}"
+            exit 1
         fi
         if [ "$VEILERQUIET" -eq 0 ]; then
+            echo -e "${YELLOW}Downloading package source tarball...${NC}"
             wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz"
             if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package downloaded successfully.${NC}"; echo -e "${YELLOW}Now verifying package integrity.${NC}" 
             else
@@ -58,9 +69,11 @@ case $1 in
             echo -e "${YELLOW}Entering build enviroment...${NC}"; sleep 0.2
 		    pushd $MOONPKG && echo -e "${WHITE}->Done!${NC}"
                 echo -e "${YELLOW}Configuring the package...${NC}"; sleep 0.2
+                ./configure --prefix=/usr
 			    echo -e "${WHITE}->Done!${NC}"
                 trap 'echo -e "${ORANGE}Failed to configure the package.${NC}"' ERR
                 echo -e "${YELLOW}Building the package...${NC}"; sleep 0.2
+                make
                 trap 'echo -e "${ORANGE}Failed to build the package.${NC}"' ERR
                 echo -e "${WHITE}->Done!${NC}"
             popd 
@@ -105,7 +118,7 @@ case $1 in
                     echo -ne "\r${YELLOW}Configuring ${WHITE}$MOONPKGNAME...${NC}"; sleep 0.2
                 done &
                 BUILDSCRIPTPID="$!"
-                sleep 1
+                ./configure --prefix=/usr
                 trap 'echo -e "kill $BUILDSCRIPTPID; ${YELLOW}Failed to configure the package.${NC}"' ERR
                 kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
                 while true; do
@@ -115,7 +128,7 @@ case $1 in
                     echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}...${NC}"; sleep 0.2
                 done &
                 BUILDSCRIPTPID="$!"
-                sleep 1
+                make
                 trap 'kill $BUILDSCRIPTPID; echo -e "${YELLOW}Failed to build the package.${NC}"' ERR
                 kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
             popd &> /dev/null
@@ -129,7 +142,7 @@ case $1 in
             trap 'echo -e "${ORANGE}An error was encountered while installing the package."' ERR
             echo -e "${YELLOW}Installing ${WHITE}${MOONPKGNAME}...${NC}"; sleep 0.2
             pushd $MOONPKG
-                make PREFIX=/usr install && echo -e "${WHITE}->Done!${NC}"
+                make install && echo -e "${WHITE}->Done!${NC}"
             echo -e "${YELLOW}Cleaning up...${NC}"; sleep 0.2
             clean 
             trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID"' ERR
@@ -143,7 +156,7 @@ case $1 in
             done &
             BUILDSCRIPTPID="$!"
             pushd $MOONPKG &> /dev/null
-            make PREFIX=/usr install &> /dev/null
+            make install &> /dev/null
             if [ "$?" -ne 0 ]; then echo -e "${YELLOW}Could not install the package.${NC}"; exit 1; kill $BUILDSCRIPTPID; 
             else
                 kill $BUILDSCRIPTPID
@@ -167,7 +180,7 @@ case $1 in
         sed -i '1d' integrity.md5
         echo -e "${ORANGE}Verifying script integrity...${NC}"
         md5sum -c integrity.md5
-        if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package integrity verified!${NC}"
+        if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Script integrity verified!${NC}"
         else
             echo -e "${ORANGE}Integrity not verified. Not uninstalling the package.${NC}"
             rm -f "$MOONPKG.tar.gz"

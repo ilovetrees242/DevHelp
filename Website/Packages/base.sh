@@ -37,14 +37,18 @@ case $1 in
             echo -ne "${WHITE}Installed version is ${YELLOW}$INSTALLEDVER${WHITE}. Would you like to proceed installing this new version?[y/n]: ${NC}"
             read -n 1
             if [[ $REPLY != "n" && $REPLY != "y" ]]; then
-                echo -e "${YELLOW}Not a valid choice!${NC}"
+                echo -e "\n${YELLOW}Not a valid choice!${NC}"
                 exit 1
             fi
             if [ $REPLY == "n" ]; then
-                echo -e "${WHITE}OK${NC}"
+                echo -e "\n${WHITE}OK${NC}"
                 exit 0
             fi
+        else
+            echo -e "${YELLOW}Package is already uninstalled.${NC}"
+            exit 1
         fi
+        printf "\n"
         if [ "$VEILERQUIET" -eq 0 ]; then
             echo -e "${YELLOW}Downloading the package source tarball${NC}"
             wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz"
