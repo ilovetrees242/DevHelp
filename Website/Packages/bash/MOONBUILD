@@ -18,8 +18,8 @@ case $1 in
                 ldd --version &> /dev/null
                 echo -e "${WHITE}Package ${YELLOW}$PKG${WHITE} found!${NC}"
             else
-                $PKG --version &> /dev/null
-                echo -e "${WHITE}Package ${YELLOW}$PKG${WHITE} found!${NC}"
+                DEPINST=$(cat /var/db/Veiler/package.db | grep $PKG | awk '${print $2}')
+                if [ $DEPINST != "yes" ]; then
             fi
         done
         set +e; trap - ERR
