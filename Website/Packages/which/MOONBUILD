@@ -1,10 +1,12 @@
 #!/bin/bash
-MOONPKGNAME="bash"
-MOONPKGVERSION="5.3"
+MOONPKGNAME="which"
+MOONPKGVERSION="2.23"
 MOONPKG="$MOONPKGNAME-$MOONPKGVERSION"
-SRC="https://ftp.gnu.org/gnu/bash"
-DEPENDS="glibc ncurses readline"
+SRC="https://ftp.gnu.org/gnu/which/"
+DEPENDS="bash glibc"
 BUILDSCRIPTPID=""
+INSTALLEDVER="$(cat /var/db/Veiler/package.db | grep $MOONPKGNAME | awk '{print $3}')"
+
 clean() {
    rm -rfv "$MOONPKG.tar.gz" "$MOONPKG.tar.gz.*" "$MOONPKG" 
 }
@@ -18,19 +20,35 @@ case $1 in
                 ldd --version &> /dev/null
                 echo -e "${WHITE}Package ${YELLOW}$PKG${WHITE} found!${NC}"
             else
-                DEPINST=$(cat /var/db/Veiler/package.db | grep $PKG | awk '{print $2}')
-                if [ $DEPINST == "yes" ]; then
-                    echo -e "${WHITE}Package ${YELLOW}$PKG${WHITE} found!${NC}"
-                else
-                    false
-                fi
+                $PKG --version &> /dev/null
+                echo -e "${WHITE}Package ${YELLOW}$PKG${WHITE} found!${NC}"
             fi
         done
         set +e; trap - ERR
         echo -e "${YELLOW}Dependencies met!${NC}"
 	;;
 	build)
+        echo -e "${YELLOW}Checking if package is already installed...${NC}"; touch compare.txt
+        echo "$MOONPKGVERSION" > compare.txt
+        echo "$INSTALLEDVER" >> compare.txt
+        if [ $(sort -Vr compare.txt | head -n1 | tail -n1) != "$INSTALLEDVER" ]; then
+            echo -e "${WHITE}This is a new version, ${YELLOW}$MOONPKGVERSION${NC}"
+            echo -e "${WHITE}Installed version is ${YELLOW}$INSTALLEDVER${WHITE}. Would you like to proceed installing this new version?[y/n]: "
+            read -n 1
+            if [[ $REPLY != "n" && $REPLY != "y" ]]; then
+                echo -e "\n${YELLOW}Not a valid choice!${NC}"
+                exit 1
+            fi
+            if [ $REPLY == "n" ]; then
+                echo -e "${WHITE}OK${NC}"
+                exit 0
+            fi
+        else
+            echo -e "${YELLOW}Package is already installed.${NC}"
+            exit 1
+        fi
         if [ "$VEILERQUIET" -eq 0 ]; then
+            echo -e "${YELLOW}Downloading package source tarball...${NC}"
             wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz"
             if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package downloaded successfully.${NC}"; echo -e "${YELLOW}Now verifying package integrity.${NC}" 
             else
@@ -50,27 +68,13 @@ case $1 in
 		    tar xvf $MOONPKG.tar.?z && echo -e "${WHITE}->Done!${NC}"
             echo -e "${YELLOW}Entering build enviroment...${NC}"; sleep 0.2
 		    pushd $MOONPKG && echo -e "${WHITE}->Done!${NC}"
-                echo -e "${YELLOW}Configuring the package...${NC}"; sleep 0.2
                 trap 'echo -e "${ORANGE}Failed to configure the package.${NC}"' ERR
-                if [ $VEILERDOC -eq 1 ]; then
-                    ./configure --prefix=/usr             \
-                                --without-bash-malloc     \
-                                --with-installed-readline \
-                                --docdir=/usr/share/doc/bash-5.3
-                else
-                    ./configure --prefix=/usr             \
-                                --without-bash-malloc     \
-                                --with-installed-readline \
-                fi
+                echo -e "${YELLOW}Configuring the package...${NC}"; sleep 0.2
+                ./configure --prefix=/usr
 			    echo -e "${WHITE}->Done!${NC}"
                 trap 'echo -e "${ORANGE}Failed to build the package.${NC}"' ERR
                 echo -e "${YELLOW}Building the package...${NC}"; sleep 0.2
                 make
-                if [ $VEILERTESTS -eq 1 ]; then
-                    echo -e "${YELLOW}Running test suite...${NC}"
-                    make tests
-                fi
-                fi
                 echo -e "${WHITE}->Done!${NC}"
             popd 
             set +e; trap - ERR
@@ -84,9 +88,9 @@ case $1 in
             done &
             BUILDSCRIPTPID="$!"
             trap 'echo "${ORANGE}An error was encountered while downloading the package.${NC}; kill $BUILDSCRIPTPID"' ERR; set +e
-            wget "$SRC/$MOONPKG.tar.gz" &> /dev/null
+            wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz" &> /dev/null
             trap - ERR
-            kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!, now verifying package integrity."
+            kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!, now verifying package integrity.${YELLOW}"
             md5sum -c integrity.md5 
             if [ "$?" -eq 0 ]; then echo -e "${WHITE}Package integrity verified!${NC}"
             else
@@ -115,11 +119,7 @@ case $1 in
                     echo -ne "\r${YELLOW}Configuring ${WHITE}$MOONPKGNAME...${NC}"; sleep 0.2
                 done &
                 BUILDSCRIPTPID="$!"
-                if [ $VEILERDOC -eq 1 ]; then 
-                    ./configure --prefix=/usr --without-bash-malloc --with-installed-readline --docdir=/usr/share/doc/bash-5.3
-                elif [ $VEILERDOC -eq 0 ]; then
-                    ./configure --prefix=/usr -without-bash-malloc --with-installed-readline
-                fi
+                ./configure --prefix=/usr
                 kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
                 trap 'kill $BUILDSCRIPTPID; echo -e "${YELLOW}Failed to build the package.${NC}"' ERR
                 while true; do
@@ -130,13 +130,7 @@ case $1 in
                 done &
                 BUILDSCRIPTPID="$!"
                 make
-                kill $BUILDSCRIPTPID; echo -e "\n${WHITE}Done!"
-                if [ $VEILERTESTS -eq 1 ]; then
-                    trap 'echo -e "${YELLOW}Failed to run the test suite${NC}"' ERR
-                    echo -e "${YELLOW}Running the test suite...${NC}"
-                    make tests
-                    echo -e "${WHITE}Done!{NC}"
-                fi
+                kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
             popd &> /dev/null
             set +e
             echo -e "${WHITE}Successfuly built ${YELLOW}$MOONPKGNAME${NC}"
@@ -149,11 +143,10 @@ case $1 in
             echo -e "${YELLOW}Installing ${WHITE}${MOONPKGNAME}...${NC}"; sleep 0.2
             pushd $MOONPKG
                 make install && echo -e "${WHITE}->Done!${NC}"
-            popd
-            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
             echo -e "${YELLOW}Cleaning up...${NC}"; sleep 0.2
+            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID"' ERR
             clean 
-            set +e
+            set - ERR; set +e
         else
             while true; do
                 echo -ne "\r${YELLOW}Installing ${WHITE}$MOONPKGNAME   ${NC}"; sleep 0.2
@@ -167,9 +160,8 @@ case $1 in
             if [ "$?" -ne 0 ]; then echo -e "${YELLOW}Could not install the package.${NC}"; exit 1; kill $BUILDSCRIPTPID; 
             else
                 kill $BUILDSCRIPTPID
-                echo -e "${WHITE}Done!${NC}"
+                echo -e "${WHITE}->Done!${NC}"
             fi
-            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
             while true; do
                 echo -ne "\r${YELLOW}Cleaning up   ${NC}"; sleep 0.2
                 echo -ne "\r${YELLOW}Cleaning up.  ${NC}"; sleep 0.2
@@ -178,8 +170,9 @@ case $1 in
             done &
             BUILDSCRIPTPID="$!"
             popd &> /dev/null
+            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
             clean &> /dev/null
-            echo "\n${WHITE}Done!"; kill $BUILDSCRIPTPID
+            echo -e "\n${WHITE}->Done!${NC}"; kill $BUILDSCRIPTPID
         fi
         trap - ERR
     ;;
@@ -187,10 +180,9 @@ case $1 in
         sed -i '1d' integrity.md5
         echo -e "${ORANGE}Verifying script integrity...${NC}"
         md5sum -c integrity.md5
-        if [ "$?" -eq 0 ]; then
-            echo -e "${YELLOW}Script integrity verified!${NC}"
+        if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Script integrity verified!${NC}"
         else
-            echo -e "${ORANGE}Integrity not verified. Not building the package.${NC}"
+            echo -e "${ORANGE}Integrity not verified. Not uninstalling the package.${NC}"
             popd
             rm -f "$MOONPKG.tar.gz"; rm -rf "$MOONPKG"
             exit 1 
@@ -205,8 +197,9 @@ case $1 in
                 echo -ne "\r${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}..."; sleep 0.2
             done &
             BUILDSCRIPTPID=$!
-		    rm -f /usr/bin/bash
-            rm -f /usr/bin/bashbug
+		    rm /usr/bin/which
+		    rm -rf /usr/share/man/man1/which.1 
+		    rm -f /usr/share/info/which.info
             echo -e "\n${WHITE}->Done!${NC}"
             set +e 
             trap - ERR
@@ -214,9 +207,10 @@ case $1 in
             echo -e "${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}..."
             set -e 
             trap 'echo -e "${ORANGE}An error was encountered while uninstalling! Manual intervention required.${NC}"' ERR
-            rm /usr/bin/which
-            rm -rf /usr/share/man/man1/which.1 && echo -e "\n${WHITE}->Done!${NC}"
-            rm -f /usr/share/info/which.info
+		    rm /usr/bin/which
+		    rm -rf /usr/share/man/man1/which.1 
+		    rm -f /usr/share/info/which.info
+            echo -e "\n${WHITE}->Done!${NC}"
             set +e
             trap - ERR
         fi
