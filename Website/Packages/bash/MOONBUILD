@@ -8,7 +8,7 @@ BUILDSCRIPTPID=""
 clean() {
    rm -rfv "$MOONPKG.tar.gz" "$MOONPKG.tar.gz.*" "$MOONPKG" 
 }
-trap 'echo -e "${YELLOW}Interrupted.${NC}"' INT
+trap 'echo -e "\n${YELLOW}Interrupted.${NC}"' INT
 case $1 in
 	chkdeps)
         echo -e "${YELLOW}Checking for dependencies...${NC}"
@@ -31,7 +31,7 @@ case $1 in
 	;;
 	build)
         if [ "$VEILERQUIET" -eq 0 ]; then
-            wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz"
+            wget "$SRC/$MOONPKG.tar.gz"
             if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package downloaded successfully.${NC}"; echo -e "${YELLOW}Now verifying package integrity.${NC}" 
             else
                 echo -e "${ORANGE}An error was encountered while downloading the package.${NC}"
@@ -116,9 +116,9 @@ case $1 in
                 done &
                 BUILDSCRIPTPID="$!"
                 if [ $VEILERDOC -eq 1 ]; then 
-                    ./configure --prefix=/usr --without-bash-malloc --with-installed-readline --docdir=/usr/share/doc/bash-5.3
+                    ./configure --prefix=/usr --without-bash-malloc --with-installed-readline --docdir=/usr/share/doc/bash-5.3 &> /dev/null
                 elif [ $VEILERDOC -eq 0 ]; then
-                    ./configure --prefix=/usr -without-bash-malloc --with-installed-readline
+                    ./configure --prefix=/usr -without-bash-malloc --with-installed-readline &> /dev/null
                 fi
                 kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
                 trap 'kill $BUILDSCRIPTPID; echo -e "${YELLOW}Failed to build the package.${NC}"' ERR
@@ -129,12 +129,12 @@ case $1 in
                     echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}...${NC}"; sleep 0.2
                 done &
                 BUILDSCRIPTPID="$!"
-                make
+                make &> /dev/null
                 kill $BUILDSCRIPTPID; echo -e "\n${WHITE}Done!"
                 if [ $VEILERTESTS -eq 1 ]; then
                     trap 'echo -e "${YELLOW}Failed to run the test suite${NC}"' ERR
                     echo -e "${YELLOW}Running the test suite...${NC}"
-                    make tests
+                    make tests > /dev/null
                     echo -e "${WHITE}Done!{NC}"
                 fi
             popd &> /dev/null
@@ -148,7 +148,8 @@ case $1 in
             trap 'echo -e "${ORANGE}An error was encountered while installing the package."' ERR
             echo -e "${YELLOW}Installing ${WHITE}${MOONPKGNAME}...${NC}"; sleep 0.2
             pushd $MOONPKG
-                make install && echo -e "${WHITE}->Done!${NC}"
+                make install
+                echo -e "${WHITE}->Done!${NC}"
             popd
             trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
             echo -e "${YELLOW}Cleaning up...${NC}"; sleep 0.2
