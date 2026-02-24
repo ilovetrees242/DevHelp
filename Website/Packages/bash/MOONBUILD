@@ -63,6 +63,7 @@ case $1 in
                                 --with-installed-readline \
                 fi
 			    echo -e "${WHITE}->Done!${NC}"
+                trap 'echo -e "${ORANGE}Failed to build the package.${NC}"' ERR
                 echo -e "${YELLOW}Building the package...${NC}"; sleep 0.2
                 make
                 if [ $VEILERTESTS -eq 1 ]; then
@@ -70,7 +71,6 @@ case $1 in
                     make tests
                 fi
                 fi
-                trap 'echo -e "${ORANGE}Failed to build the package.${NC}"' ERR
                 echo -e "${WHITE}->Done!${NC}"
             popd 
             set +e; trap - ERR
@@ -83,8 +83,8 @@ case $1 in
                 echo -ne "\r${ORANGE}Downloading the package source tarball...${NC}"; sleep 0.2
             done &
             BUILDSCRIPTPID="$!"
-            wget "$SRC/$MOONPKG.tar.gz" &> /dev/null
             trap 'echo "${ORANGE}An error was encountered while downloading the package.${NC}; kill $BUILDSCRIPTPID"' ERR; set +e
+            wget "$SRC/$MOONPKG.tar.gz" &> /dev/null
             trap - ERR
             kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!, now verifying package integrity."
             md5sum -c integrity.md5 

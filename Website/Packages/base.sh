@@ -144,9 +144,9 @@ case $1 in
             pushd $MOONPKG
                 make PREFIX=/usr install && echo -e "${WHITE}->Done!${NC}"
             echo -e "${YELLOW}Cleaning up...${NC}"; sleep 0.2
-            clean 
             trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID"' ERR
-            set +e
+            clean 
+            trap - ERR; set +e
         else
             while true; do
                 echo -ne "\r${YELLOW}Installing ${WHITE}$MOONPKGNAME   ${NC}"; sleep 0.2
@@ -162,6 +162,7 @@ case $1 in
                 kill $BUILDSCRIPTPID
                 echo -e "${WHITE}->Done!${NC}"
             fi
+            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
             while true; do
                 echo -ne "\r${YELLOW}Cleaning up   ${NC}"; sleep 0.2
                 echo -ne "\r${YELLOW}Cleaning up.  ${NC}"; sleep 0.2
@@ -171,7 +172,6 @@ case $1 in
             BUILDSCRIPTPID="$!"
             popd &> /dev/null
             clean &> /dev/null
-            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
             echo -e "\n${WHITE}->Done!${NC}"; kill $BUILDSCRIPTPID
         fi
         trap - ERR
