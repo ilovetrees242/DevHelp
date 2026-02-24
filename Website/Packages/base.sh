@@ -65,16 +65,16 @@ case $1 in
                 exit 1 
             fi
             set -e 
+            trap 'echo -e "${ORANGE}Failed to extract the tarball.${NC}"' ERR 
             echo -e "${YELLOW}Extracting the package source tarball...${NC}"; sleep 0.2
 		    tar xvf $MOONPKG.tar.?z && echo -e "${WHITE}->Done!${NC}"
-            trap 'echo -e "${ORANGE}Failed to extract the tarball.${NC}"' ERR 
             echo -e "${YELLOW}Entering build enviroment...${NC}"; sleep 0.2
 		    pushd $MOONPKG && echo -e "${WHITE}->Done!${NC}"
+                trap 'echo -e "${ORANGE}Failed to configure the package.${NC}"' ERR
                 echo -e "${YELLOW}Configuring the package...${NC}"; sleep 0.2
 			    echo -e "${WHITE}->Done!${NC}"
-                trap 'echo -e "${ORANGE}Failed to configure the package.${NC}"' ERR
-                echo -e "${YELLOW}Building the package...${NC}"; sleep 0.2
                 trap 'echo -e "${ORANGE}Failed to build the package.${NC}"' ERR
+                echo -e "${YELLOW}Building the package...${NC}"; sleep 0.2
                 echo -e "${WHITE}->Done!${NC}"
             popd 
             set +e; trap - ERR
@@ -87,8 +87,8 @@ case $1 in
                 echo -ne "\r${ORANGE}Downloading the package source tarball...${NC}"; sleep 0.2
             done &
             BUILDSCRIPTPID="$!"
-            wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz" &> /dev/null
             trap 'echo "${ORANGE}An error was encountered while downloading the package.${NC}; kill $BUILDSCRIPTPID"' ERR; set +e
+            wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz" &> /dev/null
             trap - ERR
             kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!, now verifying package integrity.${YELLOW}"
             md5sum -c integrity.md5 
@@ -106,11 +106,12 @@ case $1 in
                 echo -ne "\r${YELLOW}Extracting the package source tarball...${NC}"; sleep 0.2
             done &
             BUILDSCRIPTPID="$!"
+            trap 'kill $BUILDSCRIPTPID; echo -e "${YELLOW}Failed to extract the package.${NC}"' ERR
             tar xf $MOONPKG.tar.?z
-            trap 'kill $BUILDSCRIPTPID echo -e "${YELLOW}Failed to extract the package.${NC}"' ERR
             kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!"
             echo -e "${YELLOW}Entering build enviroment...${NC}"; sleep 0.2
 		    pushd $MOONPKG &> /dev/null && echo -e "${WHITE}->Done!${NC}"
+                trap 'echo -e "kill $BUILDSCRIPTPID; ${YELLOW}Failed to configure the package.${NC}"' ERR
                 while true; do
                     echo -ne "\r${YELLOW}Configuring ${WHITE}$MOONPKGNAME   ${NC}"; sleep 0.2
                     echo -ne "\r${YELLOW}Configuring ${WHITE}$MOONPKGNAME.  ${NC}"; sleep 0.2
@@ -119,8 +120,8 @@ case $1 in
                 done &
                 BUILDSCRIPTPID="$!"
                 sleep 1
-                trap 'echo -e "kill $BUILDSCRIPTPID; ${YELLOW}Failed to configure the package.${NC}"' ERR
                 kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
+                trap 'kill $BUILDSCRIPTPID; echo -e "${YELLOW}Failed to build the package.${NC}"' ERR
                 while true; do
                     echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}   ${NC}"; sleep 0.2
                     echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}.  ${NC}"; sleep 0.2
@@ -129,7 +130,6 @@ case $1 in
                 done &
                 BUILDSCRIPTPID="$!"
                 sleep 1
-                trap 'kill $BUILDSCRIPTPID; echo -e "${YELLOW}Failed to build the package.${NC}"' ERR
                 kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
             popd &> /dev/null
             set +e
@@ -180,7 +180,7 @@ case $1 in
         sed -i '1d' integrity.md5
         echo -e "${ORANGE}Verifying script integrity...${NC}"
         md5sum -c integrity.md5
-        if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package integrity verified!${NC}"
+        if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Script integrity verified!${NC}"
         else
             echo -e "${ORANGE}Integrity not verified. Not uninstalling the package.${NC}"
             rm -f "$MOONPKG.tar.gz"

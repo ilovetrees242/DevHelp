@@ -8,18 +8,22 @@ BUILDSCRIPTPID=""
 clean() {
    rm -rfv "$MOONPKG.tar.gz" "$MOONPKG.tar.gz.*" "$MOONPKG" 
 }
-trap 'echo -e "${YELLOW}Interrupted.${NC}"; clean' ERR
+trap 'echo -e "${YELLOW}Interrupted.${NC}"' INT
 case $1 in
 	chkdeps)
         echo -e "${YELLOW}Checking for dependencies...${NC}"
-        set -e; trap 'echo "$PKG not found!"' ERR
+        set -e; trap 'echo -e "${YELLOW}$PKG${WHITE} not found!${NC}"' ERR
         for PKG in $DEPENDS; do
             if [ "$PKG" == "glibc" ]; then
                 ldd --version &> /dev/null
                 echo -e "${WHITE}Package ${YELLOW}$PKG${WHITE} found!${NC}"
             else
-                DEPINST=$(cat /var/db/Veiler/package.db | grep $PKG | awk '${print $2}')
-                if [ $DEPINST != "yes" ]; then
+                DEPINST=$(cat /var/db/Veiler/package.db | grep $PKG | awk '{print $2}')
+                if [ $DEPINST == "yes" ]; then
+                    echo -e "${WHITE}Package ${YELLOW}$PKG${WHITE} found!${NC}"
+                else
+                    false
+                fi
             fi
         done
         set +e; trap - ERR
@@ -42,14 +46,30 @@ case $1 in
             fi
             set -e 
             echo -e "${YELLOW}Extracting the package source tarball...${NC}"; sleep 0.2
-		    tar xvf $MOONPKG.tar.?z && echo -e "${WHITE}->Done!${NC}"
             trap 'echo -e "${ORANGE}Failed to extract the tarball.${NC}"' ERR 
+		    tar xvf $MOONPKG.tar.?z && echo -e "${WHITE}->Done!${NC}"
             echo -e "${YELLOW}Entering build enviroment...${NC}"; sleep 0.2
 		    pushd $MOONPKG && echo -e "${WHITE}->Done!${NC}"
                 echo -e "${YELLOW}Configuring the package...${NC}"; sleep 0.2
-			    echo -e "${WHITE}->Done!${NC}"
                 trap 'echo -e "${ORANGE}Failed to configure the package.${NC}"' ERR
+                if [ $VEILERDOC -eq 1 ]; then
+                    ./configure --prefix=/usr             \
+                                --without-bash-malloc     \
+                                --with-installed-readline \
+                                --docdir=/usr/share/doc/bash-5.3
+                else
+                    ./configure --prefix=/usr             \
+                                --without-bash-malloc     \
+                                --with-installed-readline \
+                fi
+			    echo -e "${WHITE}->Done!${NC}"
                 echo -e "${YELLOW}Building the package...${NC}"; sleep 0.2
+                make
+                if [ $VEILERTESTS -eq 1 ]; then
+                    echo -e "${YELLOW}Running test suite...${NC}"
+                    make tests
+                fi
+                fi
                 trap 'echo -e "${ORANGE}Failed to build the package.${NC}"' ERR
                 echo -e "${WHITE}->Done!${NC}"
             popd 
@@ -82,11 +102,12 @@ case $1 in
                 echo -ne "\r${YELLOW}Extracting the package source tarball...${NC}"; sleep 0.2
             done &
             BUILDSCRIPTPID="$!"
-            tar xf $MOONPKG.tar.?z
             trap 'kill $BUILDSCRIPTPID echo -e "${YELLOW}Failed to extract the package.${NC}"' ERR
+            tar xf $MOONPKG.tar.?z
             kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!"
             echo -e "${YELLOW}Entering build enviroment...${NC}"; sleep 0.2
 		    pushd $MOONPKG &> /dev/null && echo -e "${WHITE}->Done!${NC}"
+                trap 'echo -e "kill $BUILDSCRIPTPID; ${YELLOW}Failed to configure the package.${NC}"' ERR
                 while true; do
                     echo -ne "\r${YELLOW}Configuring ${WHITE}$MOONPKGNAME   ${NC}"; sleep 0.2
                     echo -ne "\r${YELLOW}Configuring ${WHITE}$MOONPKGNAME.  ${NC}"; sleep 0.2
@@ -94,9 +115,13 @@ case $1 in
                     echo -ne "\r${YELLOW}Configuring ${WHITE}$MOONPKGNAME...${NC}"; sleep 0.2
                 done &
                 BUILDSCRIPTPID="$!"
-                sleep 1
-                trap 'echo -e "kill $BUILDSCRIPTPID; ${YELLOW}Failed to configure the package.${NC}"' ERR
+                if [ $VEILERDOC -eq 1 ]; then 
+                    ./configure --prefix=/usr --without-bash-malloc --with-installed-readline --docdir=/usr/share/doc/bash-5.3
+                elif [ $VEILERDOC -eq 0 ]; then
+                    ./configure --prefix=/usr -without-bash-malloc --with-installed-readline
+                fi
                 kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
+                trap 'kill $BUILDSCRIPTPID; echo -e "${YELLOW}Failed to build the package.${NC}"' ERR
                 while true; do
                     echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}   ${NC}"; sleep 0.2
                     echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}.  ${NC}"; sleep 0.2
@@ -104,9 +129,14 @@ case $1 in
                     echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}...${NC}"; sleep 0.2
                 done &
                 BUILDSCRIPTPID="$!"
-                sleep 1
-                trap 'kill $BUILDSCRIPTPID; echo -e "${YELLOW}Failed to build the package.${NC}"' ERR
+                make
                 kill $BUILDSCRIPTPID; echo -e "\n${WHITE}Done!"
+                if [ $VEILERTESTS -eq 1 ]; then
+                    trap 'echo -e "${YELLOW}Failed to run the test suite${NC}"' ERR
+                    echo -e "${YELLOW}Running the test suite...${NC}"
+                    make tests
+                    echo -e "${WHITE}Done!{NC}"
+                fi
             popd &> /dev/null
             set +e
             echo -e "${WHITE}Successfuly built ${YELLOW}$MOONPKGNAME${NC}"
@@ -173,8 +203,9 @@ case $1 in
                 echo -ne "\r${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}..."; sleep 0.2
             done &
             BUILDSCRIPTPID=$!
-		    rm /usr/bin/neofetch
-		    rm -rf /usr/share/man/man1/neofetch.1 
+		    rm /usr/bin/which
+		    rm -rf /usr/share/man/man1/which.1 
+            rm -f /usr/share/info/which.info
             echo -e "\n${WHITE}->Done!${NC}"
             set +e 
             trap - ERR
@@ -182,8 +213,9 @@ case $1 in
             echo -e "${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}..."
             set -e 
             trap 'echo -e "${ORANGE}An error was encountered while uninstalling! Manual intervention required.${NC}"' ERR
-            rm /usr/bin/neofetch
-            rm -rf /usr/share/man/man1/neofetch.1 && echo -e "\n${WHITE}->Done!${NC}"
+            rm /usr/bin/which
+            rm -rf /usr/share/man/man1/which.1 && echo -e "\n${WHITE}->Done!${NC}"
+            rm -f /usr/share/info/which.info
             set +e
             trap - ERR
         fi
