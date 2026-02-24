@@ -182,6 +182,9 @@ case $1 in
             echo "\n${WHITE}Done!"; kill $BUILDSCRIPTPID
         fi
         trap - ERR
+        if [ $VEILERDOC -eq 1 ]; then
+            rm -rf /usr/share/doc/bash
+        fi
     ;;
 	uninstall)
         sed -i '1d' integrity.md5
@@ -207,6 +210,8 @@ case $1 in
             BUILDSCRIPTPID=$!
 		    rm -f /usr/bin/bash
             rm -f /usr/bin/bashbug
+            rm -rf /usr/include/bash
+            rm -rf /usr/lib/pkgconfig/bash.pc
             echo -e "\n${WHITE}->Done!${NC}"
             set +e 
             trap - ERR
@@ -214,9 +219,10 @@ case $1 in
             echo -e "${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}..."
             set -e 
             trap 'echo -e "${ORANGE}An error was encountered while uninstalling! Manual intervention required.${NC}"' ERR
-            rm /usr/bin/which
-            rm -rf /usr/share/man/man1/which.1 && echo -e "\n${WHITE}->Done!${NC}"
-            rm -f /usr/share/info/which.info
+		    rm -f /usr/bin/bash
+            rm -f /usr/bin/bashbug
+            rm -rf /usr/include/bash
+            rm -rf /usr/lib/pkgconfig/bash.pc
             set +e
             trap - ERR
         fi
