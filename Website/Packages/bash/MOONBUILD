@@ -60,7 +60,7 @@ case $1 in
                 else
                     ./configure --prefix=/usr             \
                                 --without-bash-malloc     \
-                                --with-installed-readline \
+                                --with-installed-readline
                 fi
 			    echo -e "${WHITE}->Done!${NC}"
                 trap 'echo -e "${ORANGE}Failed to build the package.${NC}"' ERR
