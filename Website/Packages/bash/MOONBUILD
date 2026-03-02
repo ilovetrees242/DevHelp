@@ -2,12 +2,9 @@
 MOONPKGNAME="bash"
 MOONPKGVERSION="5.3"
 MOONPKG="$MOONPKGNAME-$MOONPKGVERSION"
-SRC="https://ftp.gnu.org/gnu/bash"
+SRC="https://mirrors.hopbox.net/gnu/bash/"
 DEPENDS="glibc ncurses readline"
 BUILDSCRIPTPID=""
-clean() {
-   rm -rfv "$MOONPKG.tar.gz" "$MOONPKG.tar.gz.*" "$MOONPKG" 
-}
 trap 'echo -e "\n${YELLOW}Interrupted.${NC}"' INT
 case $1 in
 	chkdeps)
@@ -31,11 +28,13 @@ case $1 in
 	;;
 	build)
         if [ "$VEILERQUIET" -eq 0 ]; then
-            wget "$SRC/$MOONPKG.tar.gz"
-            if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package downloaded successfully.${NC}"; echo -e "${YELLOW}Now verifying package integrity.${NC}" 
-            else
-                echo -e "${ORANGE}An error was encountered while downloading the package.${NC}"
-                exit 1
+            if [ ! -f $MOONPKG.tar.gz ]; then
+                wget "$SRC/$MOONPKG.tar.gz"
+                if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package downloaded successfully.${NC}"; echo -e "${YELLOW}Now verifying package integrity.${NC}" 
+                else
+                    echo -e "${ORANGE}An error was encountered while downloading the package.${NC}"
+                    exit 1
+                fi
             fi
             md5sum -c integrity.md5
             if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package integrity verified!${NC}"
@@ -70,7 +69,6 @@ case $1 in
                     echo -e "${YELLOW}Running test suite...${NC}"
                     make tests
                 fi
-                fi
                 echo -e "${WHITE}->Done!${NC}"
             popd 
             set +e; trap - ERR
@@ -84,7 +82,7 @@ case $1 in
             done &
             BUILDSCRIPTPID="$!"
             trap 'echo "${ORANGE}An error was encountered while downloading the package.${NC}; kill $BUILDSCRIPTPID"' ERR; set +e
-            wget "$SRC/$MOONPKG.tar.gz" &> /dev/null
+            wget -q --show-progress "$SRC/$MOONPKG.tar.gz" 
             trap - ERR
             kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!, now verifying package integrity."
             md5sum -c integrity.md5 
@@ -116,9 +114,9 @@ case $1 in
                 done &
                 BUILDSCRIPTPID="$!"
                 if [ $VEILERDOC -eq 1 ]; then 
-                    ./configure --prefix=/usr --without-bash-malloc --with-installed-readline --docdir=/usr/share/doc/bash-5.3 &> /dev/null
+                    ./configure --prefix=/usr --without-bash-malloc --with-installed-readline --docdir=/usr/share/doc/bash-5.3 > /dev/null
                 elif [ $VEILERDOC -eq 0 ]; then
-                    ./configure --prefix=/usr -without-bash-malloc --with-installed-readline &> /dev/null
+                    ./configure --prefix=/usr -without-bash-malloc --with-installed-readline > /dev/null
                 fi
                 kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
                 trap 'kill $BUILDSCRIPTPID; echo -e "${YELLOW}Failed to build the package.${NC}"' ERR
@@ -129,7 +127,7 @@ case $1 in
                     echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}...${NC}"; sleep 0.2
                 done &
                 BUILDSCRIPTPID="$!"
-                make &> /dev/null
+                make > /dev/null
                 kill $BUILDSCRIPTPID; echo -e "\n${WHITE}Done!"
                 if [ $VEILERTESTS -eq 1 ]; then
                     trap 'echo -e "${YELLOW}Failed to run the test suite${NC}"' ERR
@@ -153,7 +151,7 @@ case $1 in
             popd
             trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
             echo -e "${YELLOW}Cleaning up...${NC}"; sleep 0.2
-            clean 
+            rm -rf "$MOONPKG" 
             set +e
         else
             while true; do
@@ -164,22 +162,22 @@ case $1 in
             done &
             BUILDSCRIPTPID="$!"
             pushd $MOONPKG &> /dev/null
-            make install &> /dev/null
-            if [ "$?" -ne 0 ]; then echo -e "${YELLOW}Could not install the package.${NC}"; exit 1; kill $BUILDSCRIPTPID; 
-            else
-                kill $BUILDSCRIPTPID
-                echo -e "${WHITE}Done!${NC}"
-            fi
-            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
-            while true; do
-                echo -ne "\r${YELLOW}Cleaning up   ${NC}"; sleep 0.2
-                echo -ne "\r${YELLOW}Cleaning up.  ${NC}"; sleep 0.2
-                echo -ne "\r${YELLOW}Cleaning up.. ${NC}"; sleep 0.2
-                echo -ne "\r${YELLOW}Cleaning up...${NC}"; sleep 0.2
-            done &
-            BUILDSCRIPTPID="$!"
+                make install > /dev/null
+                if [ "$?" -ne 0 ]; then echo -e "${YELLOW}Could not install the package.${NC}"; exit 1; kill $BUILDSCRIPTPID; 
+                else
+                    kill $BUILDSCRIPTPID
+                    echo -e "${WHITE}Done!${NC}"
+                fi
+                trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
+                while true; do
+                    echo -ne "\r${YELLOW}Cleaning up   ${NC}"; sleep 0.2
+                    echo -ne "\r${YELLOW}Cleaning up.  ${NC}"; sleep 0.2
+                    echo -ne "\r${YELLOW}Cleaning up.. ${NC}"; sleep 0.2
+                    echo -ne "\r${YELLOW}Cleaning up...${NC}"; sleep 0.2
+                done &
+                BUILDSCRIPTPID="$!"
             popd &> /dev/null
-            clean &> /dev/null
+            rm -rf "$MOONPKG"
             echo "\n${WHITE}Done!"; kill $BUILDSCRIPTPID
         fi
         trap - ERR
@@ -213,6 +211,7 @@ case $1 in
             rm -f /usr/bin/bashbug
             rm -rf /usr/include/bash
             rm -rf /usr/lib/pkgconfig/bash.pc
+            rm -rf /usr/share/doc/bash
             echo -e "\n${WHITE}->Done!${NC}"
             set +e 
             trap - ERR
@@ -224,6 +223,7 @@ case $1 in
             rm -f /usr/bin/bashbug
             rm -rf /usr/include/bash
             rm -rf /usr/lib/pkgconfig/bash.pc
+            rm -rf /usr/share/doc/bash
             set +e
             trap - ERR
         fi

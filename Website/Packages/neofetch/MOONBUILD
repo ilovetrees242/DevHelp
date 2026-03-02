@@ -1,0 +1,222 @@
+#!/bin/bash
+MOONPKGNAME="neofetch"
+MOONPKGVERSION="7.1.0"
+MOONPKG="$MOONPKGNAME-$MOONPKGVERSION"
+SRC="https://github.com/dylanaraps/neofetch/archive/refs/tags/"
+DEPENDS="bash glibc"
+BUILDSCRIPTPID=""
+INSTALLEDVER="$(cat /var/db/Veiler/package.db | grep $MOONPKGNAME | awk '{print $3}')"
+
+trap 'echo -e "${YELLOW}Interrupted.${NC}"; clean' INT
+case $1 in
+	chkdeps)
+        echo -e "${YELLOW}Checking for dependencies...${NC}"
+        set -e; trap 'echo -e "${YELLOW}$PKG${WHITE} not found!${NC}"' ERR
+        for PKG in $DEPENDS; do
+            if [ "$PKG" == "glibc" ]; then
+                ldd --version &> /dev/null
+                echo -e "${WHITE}Package ${YELLOW}$PKG${WHITE} found!${NC}"
+            else
+                $PKG --version &> /dev/null
+                echo -e "${WHITE}Package ${YELLOW}$PKG${WHITE} found!${NC}"
+            fi
+        done
+        set +e; trap - ERR
+        echo -e "${YELLOW}Dependencies met!${NC}"
+	;;
+	build)
+        echo -e "${YELLOW}Checking if package is already installed...${NC}"; touch compare.txt
+        echo "$MOONPKGVERSION" > compare.txt
+        echo "$INSTALLEDVER" >> compare.txt
+        if [ $(sort -Vr compare.txt | head -n1 | tail -n1) != "$INSTALLEDVER" ]; then
+            echo -e "${WHITE}This is a new version, ${YELLOW}$MOONPKGVERSION${NC}"
+            echo -ne "${WHITE}Installed version is ${YELLOW}$INSTALLEDVER${WHITE}. Would you like to proceed installing this new version?[y/n]: ${NC}"
+            read -n 1 
+            if [[ $REPLY != "n" && $REPLY != "y" ]]; then
+                echo -e "\n${YELLOW}Not a valid choice!${NC}"
+                exit 1
+            fi
+            if [ $REPLY == "n" ]; then
+                echo -e "\n${WHITE}Ok.${NC}"
+                exit 0
+            fi
+        else
+            echo -ne "${YELLOW}Package is already installed! Rebuild?[y/n]: ${NC}"
+            read -n 1
+            if [[ $REPLY != "n" && $REPLY != "y" ]]; then
+                echo -e "\n${YELLOW}Not a valid choice!${NC}"
+                exit 1
+            fi
+            if [ $REPLY == "n" ]; then
+                echo -e "\n${WHITE}Ok.${NC}"
+                exit 0
+            fi
+        fi
+        printf "\n"
+        if [ "$VEILERQUIET" -eq 0 ]; then
+            echo -e "${YELLOW}Downloading the package source...${NC}"
+            if [ ! -f "$MOONPKG.tar.gz" ]; then 
+                wget "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz"
+                if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package downloaded successfully.${NC}"; echo -e "${YELLOW}Now verifying package integrity.${NC}" 
+                else
+                    echo -e "${ORANGE}An error was encountered while downloading the package.${NC}"
+                    exit 1
+                fi
+            fi
+            md5sum -c integrity.md5
+            if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Package integrity verified!${NC}"
+            else
+                echo -e "${ORANGE}Integrity not verified. Not building the package.${NC}"
+                rm -f "$MOONPKG.tar.gz"
+                exit 1 
+            fi
+            set -e 
+            trap 'echo -e "${ORANGE}Failed to extract the tarball.${NC}"' ERR 
+            echo -e "${YELLOW}Extracting the package source tarball...${NC}"; sleep 0.2
+		    tar xvf $MOONPKG.tar.?z && echo -e "${WHITE}->Done!${NC}"
+            echo -e "${YELLOW}Entering build enviroment...${NC}"; sleep 0.2
+		    pushd $MOONPKG && echo -e "${WHITE}->Done!${NC}"
+                trap 'echo -e "${ORANGE}Failed to configure the package.${NC}"' ERR
+                echo -e "${YELLOW}Configuring the package...${NC}"; sleep 0.2
+			    echo -e "${WHITE}->Done!${NC}"
+                trap 'echo -e "${ORANGE}Failed to build the package.${NC}"' ERR
+                echo -e "${YELLOW}Building the package...${NC}"; sleep 0.2
+                echo -e "${WHITE}->Done!${NC}"
+            popd 
+            set +e; trap - ERR
+        else
+            set -e 
+            while true; do
+                echo -ne "\r${ORANGE}Downloading the package source tarball   ${NC}"; sleep 0.2
+                echo -ne "\r${ORANGE}Downloading the package source tarball.  ${NC}"; sleep 0.2
+                echo -ne "\r${ORANGE}Downloading the package source tarball.. ${NC}"; sleep 0.2
+                echo -ne "\r${ORANGE}Downloading the package source tarball...${NC}"; sleep 0.2
+            done &
+            BUILDSCRIPTPID="$!"
+            trap 'echo "${ORANGE}An error was encountered while downloading the package.${NC}; kill $BUILDSCRIPTPID"' ERR;
+            wget -q --show-progress "$SRC/$MOONPKGVERSION.tar.gz" -O "$MOONPKG.tar.gz" 
+            trap - ERR
+            set +e
+            kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!, now verifying package integrity.${YELLOW}"
+            md5sum -c integrity.md5 
+            if [ "$?" -eq 0 ]; then echo -e "${WHITE}Package integrity verified!${NC}"
+            else
+                echo -e "${ORANGE}Integrity not verified. Not building the package.${NC}"
+                rm -f "$MOONPKG.tar.gz"
+                exit 1 
+            fi
+            set -e
+            trap 'kill $BUILDSCRIPTPID echo -e "${YELLOW}Failed to extract the package.${NC}"' ERR
+            while true; do
+                echo -ne "\r${YELLOW}Extracting the package source tarball   ${NC}"; sleep 0.2
+                echo -ne "\r${YELLOW}Extracting the package source tarball.  ${NC}"; sleep 0.2
+                echo -ne "\r${YELLOW}Extracting the package source tarball.. ${NC}"; sleep 0.2
+                echo -ne "\r${YELLOW}Extracting the package source tarball...${NC}"; sleep 0.2
+            done &
+            BUILDSCRIPTPID="$!"
+            tar xf $MOONPKG.tar.?z
+            kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
+            echo -e "${YELLOW}Entering build enviroment...${NC}"; sleep 0.2
+		    pushd $MOONPKG &> /dev/null && echo -e "${WHITE}->Done!${NC}"
+                trap 'echo -e "kill $BUILDSCRIPTPID; ${YELLOW}Failed to configure the package.${NC}"' ERR
+                while true; do
+                    echo -ne "\r${YELLOW}Configuring ${WHITE}$MOONPKGNAME   ${NC}"; sleep 0.2
+                    echo -ne "\r${YELLOW}Configuring ${WHITE}$MOONPKGNAME.  ${NC}"; sleep 0.2
+                    echo -ne "\r${YELLOW}Configuring ${WHITE}$MOONPKGNAME.. ${NC}"; sleep 0.2
+                    echo -ne "\r${YELLOW}Configuring ${WHITE}$MOONPKGNAME...${NC}"; sleep 0.2
+                done &
+                BUILDSCRIPTPID="$!"
+                sleep 1
+                kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
+                trap 'kill $BUILDSCRIPTPID; echo -e "${YELLOW}Failed to build the package.${NC}"' ERR
+                while true; do
+                    echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}   ${NC}"; sleep 0.2
+                    echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}.  ${NC}"; sleep 0.2
+                    echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}.. ${NC}"; sleep 0.2
+                    echo -ne "\r${YELLOW}Compiling ${WHITE}$MOONPKGNAME${YELLOW}...${NC}"; sleep 0.2
+                done &
+                BUILDSCRIPTPID="$!"
+                sleep 1
+                kill $BUILDSCRIPTPID; echo -e "\n${WHITE}->Done!${NC}"
+            popd &> /dev/null
+            set +e
+            echo -e "${WHITE}Successfuly built ${YELLOW}$MOONPKGNAME${NC}"
+        fi
+	;;
+    install)
+        if [ $VEILERQUIET -eq 0 ]; then
+            set -e
+            trap 'echo -e "${ORANGE}An error was encountered while installing the package."' ERR
+            echo -e "${YELLOW}Installing ${WHITE}${MOONPKGNAME}...${NC}"; sleep 0.2
+            pushd $MOONPKG
+                make PREFIX=/usr install && echo -e "${WHITE}->Done!${NC}"
+            popd
+            echo -e "${YELLOW}Cleaning up...${NC}"; sleep 0.2
+            trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID"' ERR
+            rm -rf "$MOONPKG" 
+            trap - ERR; set +e
+        else
+            while true; do
+                echo -ne "\r${YELLOW}Installing ${WHITE}$MOONPKGNAME   ${NC}"; sleep 0.2
+                echo -ne "\r${YELLOW}Installing ${WHITE}$MOONPKGNAME.  ${NC}"; sleep 0.2
+                echo -ne "\r${YELLOW}Installing ${WHITE}$MOONPKGNAME.. ${NC}"; sleep 0.2
+                echo -ne "\r${YELLOW}Installing ${WHITE}$MOONPKGNAME...${NC}"; sleep 0.2
+            done &
+            BUILDSCRIPTPID="$!"
+            pushd $MOONPKG &> /dev/null
+               make PREFIX=/usr install &> /dev/null
+                if [ "$?" -ne 0 ]; then echo -e "${YELLOW}Could not install the package.${NC}"; exit 1; kill $BUILDSCRIPTPID; 
+                else
+                    kill $BUILDSCRIPTPID
+                    echo -e "\n${WHITE}->Done!${NC}"
+                fi
+                trap 'echo -e "${YELLOW}Failed to clean up.${NC}; kill $BUILDSCRIPTPID; exit 1"' ERR
+                while true; do
+                    echo -ne "\r${YELLOW}Cleaning up   ${NC}"; sleep 0.2
+                    echo -ne "\r${YELLOW}Cleaning up.  ${NC}"; sleep 0.2
+                    echo -ne "\r${YELLOW}Cleaning up.. ${NC}"; sleep 0.2
+                    echo -ne "\r${YELLOW}Cleaning up...${NC}"; sleep 0.2
+                done &
+                BUILDSCRIPTPID="$!"
+            popd &> /dev/null
+            rm -rf "$MOONPKG"
+            echo -e "\n${WHITE}->Done!"; kill $BUILDSCRIPTPID
+        fi
+        trap - ERR
+    ;;
+	uninstall)
+        sed -i '1d' integrity.md5
+        echo -e "${ORANGE}Verifying script integrity...${NC}"
+        md5sum -c integrity.md5
+        if [ "$?" -eq 0 ]; then echo -e "${YELLOW}Script integrity verified!${NC}"
+        else
+            echo -e "${ORANGE}Integrity not verified. Not uninstalling the package.${NC}"
+            rm -rf "$CACHEPATH/$MOONPKG" "$CACHEPATH/$MOONPKGNAME"
+            exit 1 
+        fi
+        if [ $VEILERQUIET -eq 1 ]; then
+            set -e 
+            trap 'kill $BUILDSCRIPTPID; echo -e "${ORANGE}An error was encountered while uninstalling! Manual intervention required.${NC}"' ERR
+            while true; do
+                echo -ne "\r${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}   "; sleep 0.2
+                echo -ne "\r${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}.  "; sleep 0.2
+                echo -ne "\r${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}.. "; sleep 0.2
+                echo -ne "\r${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}..."; sleep 0.2
+            done &
+            BUILDSCRIPTPID=$!
+		    rm /usr/bin/neofetch
+		    rm -rf /usr/share/man/man1/neofetch.1 
+            echo -e "\n${WHITE}->Done!${NC}"
+            set +e 
+            trap - ERR
+        else
+            echo -e "${YELLOW}Uninstalling ${WHITE}${MOONPKGNAME}${YELLOW}..."
+            set -e 
+            trap 'echo -e "${ORANGE}An error was encountered while uninstalling! Manual intervention required.${NC}"' ERR
+            rm /usr/bin/neofetch
+            rm -rf /usr/share/man/man1/neofetch.1 && echo -e "\n${WHITE}->Done!${NC}"
+            set +e
+            trap - ERR
+        fi
+	;;
+esac
