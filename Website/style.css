@@ -12,17 +12,14 @@ body {
     height: 100%;
     position: fixed;
     overflow: hidden;
-    border-image: linear-gradient(to top, #151414 0%, #BB9FC2 100%) 1; 
+    border-image: linear-gradient(to top, #151414 0%, #f7eba3 100%) 1; 
     border-right: 4px solid;
 } 
-.nav div {
-    background-color: #B292AC;
-}
 .nav div h1 {
     bottom: 0;
     padding: 25px;
     color: #E6ECE6;
-    background: linear-gradient(45deg, #050505, #8C7289);
+    background: linear-gradient(45deg, #050505, #f7eba3);
     position: absolute;
     width: 100%;
 }
@@ -31,28 +28,28 @@ body {
     display: block;
     text-align: center;
     padding: 25px;
-    background: linear-gradient(45deg, #ffddff 0%, #050505 50%);
+    background: linear-gradient(45deg, #ffea75 0%, #050505 50%);
     background-size: 1000px;
     background-position: -560px;
     transition: 1s ease-in-out;
 }
 .nav a:hover{
-    background-color: #C8A3BC;
     background-position: 0px;
 }
 .nav a:nth-of-type(4) {
-    background-color: #BB9FC2;
+    background-color: #ffec80;
+    color: #050505;
     padding: 25px;
     display: block;
     text-align: center;
     text-decoration: none;
     font-weight: bold;
     transition: 1s ease-in-out;
-    box-shadow: 0px 0px 55px 10px #BB9FC2;
+    box-shadow: 0px 0px 55px 10px #ffec80;
 }
 .nav a:nth-of-type(4):hover {
-    box-shadow: 0px 15px 55px 15px #BE9BB2;
-    background-color: #BE9BB2;
+    box-shadow: 0px 15px 55px 15px #f7eba3;
+    background-color: #f7eba3;
 }
 .intro {
     margin-left: 21%;
@@ -61,13 +58,14 @@ body {
     padding: 50px;
     font-size: 75px;
     position: relative;
-    background-color: #C39FB7;
+    border-bottom: solid 2px #F9E67D;
+    background-color: #050505;
     border-radius: 5px;
 }
 .intro::before {
     content: ".";
     color: transparent;
-    background: linear-gradient(45deg, #DAB2CC, #90758D 50%);
+    background: linear-gradient(45deg, #F9E67D, #C3BA82 50%);
     border-radius: 25px;
     margin-right: 50px;
     width: 20px;
@@ -86,7 +84,7 @@ body {
     position: absolute;
     margin-right: 25px;
     width: 25px;
-    background: linear-gradient(45deg, #BB9FC2, #90758D, #FFDDFF);
+    background: linear-gradient(45deg, #FFEC80, #F5E270, #EAD867);
 }
 .abt {
     display: flex;
@@ -95,7 +93,8 @@ body {
 }
 .abt div {
     transition: 1s ease-in-out;
-    background-color: #C29EB6;
+    background-color: #101010;
+    border: 5px solid #FFEC80;
     width: 200px;
     font-size: 20px;
     padding: 25px;
@@ -104,36 +103,18 @@ body {
     display: inline-block;
 }
 .abt div:nth-child(2){
-    background-color: #B995AC;
+    border: 5px solid #F3E075;
 }
 .abt div:nth-child(3){
-    background-color: #AF8CA2;
+    border: 5px solid #E9D665;
 }
 .abt div:nth-child(4){
-    background-color: #A68399;
+    border: 5px solid #E6DC6A;
 }
-.abt div:nth-child(1):hover {
+.abt div:hover {
     padding: 50px;
-    box-shadow: 0px 0px 55px 25px #C29EB6;
+    box-shadow: 0px 0px 55px 25px #252525;
     margin-right: 10px;
-}
-.abt div:nth-child(2):hover {
-    padding: 50px;
-    box-shadow: 0px 0px 55px 25px #B995Ac;
-    margin-right: 10px;
-    margin-left: 10px;
-}
-.abt div:nth-child(3):hover {
-    padding: 50px;
-    box-shadow: 0px 0px 55px 25px #AF8CA2;
-    margin-right: 10px;
-    margin-left: 10px;
-}
-.abt div:nth-child(4):hover {
-    padding: 50px;
-    box-shadow: 0px 0px 55px 25px #A68399;
-    margin-right: 10px;
-    margin-left: 10px;
 }
 .abtdev {
     margin-left: 20%;
