@@ -1,5 +1,5 @@
 body {
-    background-color: #161515;
+    background-color: #050505;
 }
 *{
     margin: 0;
@@ -14,6 +14,10 @@ body {
     overflow: hidden;
     border-image: linear-gradient(to top, #151414 0%, #f7eba3 100%) 1; 
     border-right: 4px solid;
+    margin: 0;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
 } 
 .nav div h1 {
     bottom: 0;
@@ -38,17 +42,16 @@ body {
 }
 .nav a:nth-of-type(4) {
     background-color: #ffec80;
-    color: #050505;
+    color: #555555;
     padding: 25px;
     display: block;
     text-align: center;
     text-decoration: none;
     font-weight: bold;
     transition: 1s ease-in-out;
-    box-shadow: 0px 0px 55px 10px #ffec80;
 }
 .nav a:nth-of-type(4):hover {
-    box-shadow: 0px 15px 55px 15px #f7eba3;
+    box-shadow: 0px 0px 55px 10px #ffec80;
     background-color: #f7eba3;
 }
 .intro {
@@ -58,8 +61,9 @@ body {
     padding: 50px;
     font-size: 75px;
     position: relative;
-    border-bottom: solid 2px #F9E67D;
-    background-color: #050505;
+    color: #ffffff;
+    border-bottom: solid 5px #F9E67D;
+    background-color: #;
     border-radius: 5px;
 }
 .intro::before {
@@ -71,10 +75,16 @@ body {
     width: 20px;
     height: 100px;
 }
+.abt .headers {
+    margin: 0;
+}
+.abt .headers::before {
+    height: 800px;
+}
 .headers {
-    margin-left: 20%;
     font-size: 50px;
     padding: 25px;
+    margin-left: 22%;
     position: relative;
 }
 .headers::before{
@@ -87,34 +97,29 @@ body {
     background: linear-gradient(45deg, #FFEC80, #F5E270, #EAD867);
 }
 .abt {
-    display: flex;
-    margin-left: 22%;
+    margin-left: 20%;
     margin-top: 100px;
+    padding-bottom: 60px;
+    background: linear-gradient(45deg, #ffff7d, #000000 70%);
 }
 .abt div {
     transition: 1s ease-in-out;
     background-color: #101010;
-    border: 5px solid #FFEC80;
     width: 200px;
     font-size: 20px;
     padding: 25px;
-    margin-right: 5px;
-    border-radius: 25px;
-    display: inline-block;
+    padding-right: 60%;
+    margin-left: 75px;
+    display: flex;
 }
-.abt div:nth-child(2){
-    border: 5px solid #F3E075;
+.abt div:nth-of-type(1){
+    background-color: #ffff8f;
+    color: #050505;
+    font-size: 25px;
+    text-align: center;
 }
-.abt div:nth-child(3){
-    border: 5px solid #E9D665;
-}
-.abt div:nth-child(4){
-    border: 5px solid #E6DC6A;
-}
-.abt div:hover {
-    padding: 50px;
-    box-shadow: 0px 0px 55px 25px #252525;
-    margin-right: 10px;
+.abt div:nth-of-type(1) p{
+    color: #ffff8f
 }
 .abtdev {
     margin-left: 20%;
