@@ -1,6 +1,6 @@
 cat > MOONBUILD << "EOF"
 #!/bin/bash
-BUILDSCRIPTPID=""
+BUILDSCRITPID="$!"
 animation(){
     while true; do
         echo -ne "\r$1   ${NC}"; sleep 0.2
@@ -26,11 +26,10 @@ case $1 in
         fi
     ;;
     verifyintegrity)
-        echo -e "${YELLOW}"$MOONPKGNAME":${WHITE} Verifiying package integrity"
         sha256sum --check --quiet integrity.sha
         echo -ne ${NC}
         if [ $? -ne 0 ]; then 
-            echo -e "${ORANGE}"$MOONPKGNAME" Error:${WHITE} Package integrity was not verified!${NC}"; exit 1
+            echo -e "\n${ORANGE}"$MOONPKGNAME": Error:${WHITE} Package integrity was not verified!${NC}"; exit 1
         fi
     ;;
     build)
@@ -65,20 +64,20 @@ case $1 in
 
                 ./configure --prefix=/usr
 
-                if [ $? -ne 0 ]; then echo -e "${ORANGE}Could not configure the package${NC}"; fi
-                echo -e "${YELLOW}Building $MOONPKGNAME...${NC}"
+                if [ $? -ne 0 ]; then echo -e "${ORANGE}"$MOONPKGNAME": Error: ${WHITE}Could not configure the package${NC}"; fi
+                echo -e "${YELLOW}"$MOONPKGNAME": Building the package...${NC}"
                 # build command goes here
 
                 make
 
-                if [ $? -ne 0 ]; then echo -e "${ORANGE}Could not build the package${NC}"; fi
+                if [ $? -ne 0 ]; then echo -e "${ORANGE}"$MOONPKGNAME": Error:Could not build the package${NC}"; fi
             popd
             set +e
         fi
     ;;
     install)
         if [ $VEILERQUIET -eq 1 ]; then
-            animation "${YELLOW}Installing $MOONPKGNAME${NC}"
+            animation "${YELLOW}$MOONPKGNAME: ${WHITE}Installing the package${NC}"
             pushd $MOONPKG &> /dev/null
                 # install command goes here
                 make install > /dev/null
@@ -89,11 +88,11 @@ case $1 in
             build_stop_animation; echo
             if [ "$VEILERDOC" -eq 0 ]; then
                 while read file; do
-                    rm -vf "$file"
+                    rm -f "$file"
                 done < /var/db/Veiler/sync/"$MOONPKGNAME"/docfiles
             fi
         else
-            echo -e "${YELLOW}Installing $MOONPKGNAME...${NC}" 
+            echo -e "${YELLOW}$MOONPKGNAME: ${WHITE}Installing the package...${NC}" 
             pushd $MOONPKG
                 # install command goes here
                 make install
@@ -103,18 +102,18 @@ case $1 in
             popd
             if [ "$VEILERDOC" -eq 0 ]; then
                 while read file; do
-                    rm -f "$file"
+                    rm -vf "$file"
                 done < /var/db/Veiler/sync/"$MOONPKGNAME"/docfiles
             fi
         fi
     ;;
     uninstall)
         if [ $VEILERQUIET -eq 1 ]; then
-            animation "${YELLOW}Unistalling $MOONPKGNAME${NC}"
+            animation "${YELLOW}$MOONPKGNAME: ${WHITE}Uninstalling the package${NC}"
             while read name; do rm -f $name; done < "/var/db/Veiler/local/$MOONPKGNAME/files"
             build_stop_animation; echo
         else
-            echo -e "${YELLOW}Uninstalling $MOONPKGNAME...${NC}" 
+            echo -e "${YELLOW}$MOONPKGNAME: ${WHITE}Uninstalling the package...${NC}" 
             while read name; do rm -vf $name; done < "/var/db/Veiler/local/$MOONPKGNAME/files"
         fi
     ;;
