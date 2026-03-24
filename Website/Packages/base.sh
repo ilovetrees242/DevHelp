@@ -1,10 +1,5 @@
 cat > MOONBUILD << "EOF"
 #!/bin/bash
-MOONPKGNAME="which"
-MOONPKGVERSION="2.23"
-MOONPKG="$MOONPKGNAME-$MOONPKGVERSION"
-MOONPKGSRC="https://ftp.gnu.org/gnu/which"
-DEPENDS="bash glibc"
 BUILDSCRIPTPID=""
 animation(){
     while true; do
@@ -15,86 +10,67 @@ animation(){
     done &
     BUILDSCRIPTPID="$!"
 }
-stop_animation(){
+build_stop_animation(){
     if [ -n $BUILDSCRIPTPID ]; then kill $BUILDSCRIPTPID; fi &> /dev/null
 }
-trap 'stop_animation' INT TERM ERR
+trap 'build_stop_animation' INT TERM ERR
+source /var/db/Veiler/sync/(package)/info
 case $1 in
-    chkdeps)
-        for PACKAGE in $DEPENDS; do
-            INSTALLED="$(grep -w "$PACKAGE" /var/db/Veiler/package.db | awk '{print $2}')"
-            if [ $INSTALLED == "yes" ]; then
-                echo -e "${YELLOW}Package ${WHITE}$PACKAGE${YELLOW} found!${NC}"
-            elif [ $INSTALLED == "no" ]; then
-                echo -e "${ORANGE}Package ${WHITE}$PACKAGE${ORANGE} not found!${NC}"
-                exit 1
-            else
-                echo -e "${ORANGE}Incorrect structure of package database.${NC}"
-                exit 1
+    getpkg)
+        if [ ! -f "$MOONPKG.tar.gz" ]; then
+            if [ "$VEILERQUIET" -eq 1 ]; then wget -q --show-progress ""$SRC"/"$MOONPKG".tar.gz"
+            else wget ""$SRC"/"$MOONPKG".tar.gz"; fi
+            if [ $? -ne 0 ]; then
+                echo -e "${ORANGE}"$MOONPKGNAME": Error: ${WHITE}There was an error while downloading the package source tarball${NC}"; exit 1
             fi
-        done
+        fi
+    ;;
+    verifyintegrity)
+        echo -e "${YELLOW}"$MOONPKGNAME":${WHITE} Verifiying package integrity"
+        sha256sum --check --quiet integrity.sha
+        echo -ne ${NC}
+        if [ $? -ne 0 ]; then 
+            echo -e "${ORANGE}"$MOONPKGNAME" Error:${WHITE} Package integrity was not verified!${NC}"; exit 1
+        fi
     ;;
     build)
-        if [ $VEILERQUIET -eq 1 ]; then
-            if [ ! -f "$MOONPKG.tar.gz" ]; then
-                echo -e "${YELLOW}Downloading package source tarball...${NC}"
-                wget -q --show-progress "$MOONPKGSRC/$MOONPKG.tar.gz"
-                if [ $? -eq 0 ]; then
-                    echo -e "${WHITE}Package downloaded successfully!${NC}"
-                else
-                    echo -e "${ORANGE}There was an error while downloading the package source tarball${NC}"; exit 1
-                fi
-            fi
-            set -e
-            if [ -d $MOONPKG ]; then rm -rf $MOONPKG; fi
-            echo -e "${YELLOW}Verifiying package integrity${NC}"
-            sha256sum --check integrity.sha
-            if [ $? -ne 0 ]; then 
-                    echo -e "${ORANGE}Package integrity was not verified!${NC}"
-            fi
-            echo -e "${WHITE}Package integrity verified!${NC}"
-            animation "${YELLOW}Extracting the package source tarball${NC}"
+        if [ -d "$MOONPKG" ]; then rm -rf "$MOONPKG"; fi
+        if [ "$VEILERQUIET" -eq 1 ]; then
+            animation "${YELLOW}"$MOONPKGNAME": ${WHITE}Extracting the package source tarball${NC}"
             tar xf "$MOONPKG.tar.gz"
-            if [ $? -ne 0 ]; then echo -e "${ORANGE}Could not extract the package source tarball${NC}"; fi
-            stop_animation; echo
+            if [ $? -ne 0 ]; then echo -e "${ORANGE}"$MOONPKGNAME" Error: ${WHITE}Could not extract the package source tarball${NC}"; fi
+            build_stop_animation; echo
             pushd "$MOONPKG" &> /dev/null
-                animation "${YELLOW}Configuring $MOONPKGNAME${NC}"
+                animation "${YELLOW}"$MOONPKGNAME": ${WHITE}Configuring the package${NC}"
+
                 ./configure --prefix=/usr > /dev/null
-                if [ $? -ne 0 ]; then echo -e "${ORANGE}Could not configure the package${NC}"; fi
-                stop_animation; echo
-                animation "${YELLOW}Building $MOONPKGNAME${NC}"
+
+                if [ $? -ne 0 ]; then echo -e "${ORANGE}"$MOONPKGNAME": Error: ${NC}Could not configure the package${NC}"; fi
+                build_stop_animation; echo
+                animation "${YELLOW}"$MOONPKGNAME": ${WHITE}Building the package${NC}"
+
                 make > /dev/null
-                if [ $? -ne 0 ]; then echo -e "${ORANGE}Could not build the package${NC}"; fi
-                stop_animation; echo
+
+                if [ $? -ne 0 ]; then echo -e "${ORANGE}"$MOONPKGNAME": Error: ${WHITE}Could not build the package${NC}"; fi
+                build_stop_animation; echo
             popd &> /dev/null
             set +e
         else
-            if [ ! -f "$MOONPKG.tar.gz" ]; then
-                echo -e "${YELLOW}Downloading package source tarball...${NC}"
-                wget "$MOONPKGSRC/$MOONPKG.tar.gz"
-                if [ $? -eq 0 ]; then
-                    echo -e "${WHITE}Package downloaded successfully!${NC}"
-                else
-                    echo -e "${ORANGE}There was an error while downloading the package source tarball${NC}"; exit 1
-                fi
-            fi
-            set -e
-            echo -e "${YELLOW}Verifiying package integrity...${NC}"
-            sha256sum --check integrity.sha
-            if [ $? -ne 0 ]; then 
-                    echo -e "${ORANGE}Package integrity was not verified!${NC}"
-            fi
-            echo -e "${WHITE}Package integrity verified!${NC}"
-            if [ -d $MOONPKG ]; then rm -rf $MOONPKG; fi
-            echo -e "${YELLOW}Extracting the package source tarball...${NC}"
+            echo -e "${YELLOW}"$MOONPKGNAME": Extracting the package source tarball...${NC}"
             tar xvf "$MOONPKG.tar.gz"
-            if [ $? -ne 0 ]; then echo -e "${ORANGE}Could not extract the package source tarball${NC}"; fi
+            if [ $? -ne 0 ]; then echo -e "${ORANGE}"$MOONPKGNAME": Error: Could not extract the package source tarball${NC}"; fi
             pushd "$MOONPKG"
-                echo -e "${YELLOW}Configuring $MOONPKGNAME...${NC}"
+                echo -e "${YELLOW}"$MOONPKGNAME": ${WHITE}Configuring the package...${NC}"
+                # configure command goes here
+
                 ./configure --prefix=/usr
+
                 if [ $? -ne 0 ]; then echo -e "${ORANGE}Could not configure the package${NC}"; fi
                 echo -e "${YELLOW}Building $MOONPKGNAME...${NC}"
+                # build command goes here
+
                 make
+
                 if [ $? -ne 0 ]; then echo -e "${ORANGE}Could not build the package${NC}"; fi
             popd
             set +e
@@ -104,47 +80,44 @@ case $1 in
         if [ $VEILERQUIET -eq 1 ]; then
             animation "${YELLOW}Installing $MOONPKGNAME${NC}"
             pushd $MOONPKG &> /dev/null
+                # install command goes here
                 make install > /dev/null
-                if [ $? -ne 0 ]; then echo -e "${ORANGE}Failed to install the package${NC}"; exit 1; fi
+
+                if [ $? -ne 0 ]; then echo -e "${ORANGE}"$MOONPKGNAME": Error: ${WHITE}Failed to install the package${NC}"; exit 1; fi
+                cp -r /var/db/Veiler/sync/"$MOONPKGNAME"/ /var/db/Veiler/local &> /dev/null
             popd &> /dev/null
-            stop_animation; echo
-            if [ $VEILERDOC -eq 0 ]; then
-                rm -f /usr/share/info/which.info
-                rm -f /usr/share/man/man1/which.1
+            build_stop_animation; echo
+            if [ "$VEILERDOC" -eq 0 ]; then
+                while read file; do
+                    rm -vf "$file"
+                done < /var/db/Veiler/sync/"$MOONPKGNAME"/docfiles
             fi
         else
             echo -e "${YELLOW}Installing $MOONPKGNAME...${NC}" 
             pushd $MOONPKG
+                # install command goes here
                 make install
-                if [ $? -ne 0 ]; then echo -e "${ORANGE}Failed to install the package${NC}"; exit 1; fi
+
+                if [ $? -ne 0 ]; then echo -e "${ORANGE}"$MOONPKGNAME": Error: ${WHITE}Failed to install the package${NC}"; exit 1; fi
+                cp -r /var/db/Veiler/sync/"$MOONPKGNAME"/ /var/db/Veiler/local &> /dev/null
             popd
-            if [ $VEILERDOC -eq 0 ]; then
-                rm -vf /usr/share/info/which.info
-                rm -vf /usr/share/man/man1/which.1
+            if [ "$VEILERDOC" -eq 0 ]; then
+                while read file; do
+                    rm -f "$file"
+                done < /var/db/Veiler/sync/"$MOONPKGNAME"/docfiles
             fi
         fi
     ;;
     uninstall)
-        echo -e "${YELLOW}Verifiying package integrity${NC}"
-        sha256sum -c integrity.sha
-        if [ $? -ne 0 ]; then echo -e "${ORANGE}Failed to verify the package integrity!${NC}"; exit 1; fi
         if [ $VEILERQUIET -eq 1 ]; then
             animation "${YELLOW}Unistalling $MOONPKGNAME${NC}"
-            pushd $MOONPKG &> /dev/null
-                make uninstall > /dev/null
-                if [ $? -ne 0 ]; then echo -e "${ORANGE}Failed to uninstall the package${NC}"; exit 1; fi
-            popd &> /dev/null
-            stop_animation; echo
+            while read name; do rm -f $name; done < "/var/db/Veiler/local/$MOONPKGNAME/files"
+            build_stop_animation; echo
         else
             echo -e "${YELLOW}Uninstalling $MOONPKGNAME...${NC}" 
-            pushd $MOONPKG
-                make uninstall
-                if [ $? -ne 0 ]; then echo -e "${ORANGE}Failed to uninstall the package${NC}"; exit 1; fi
-            popd
+            while read name; do rm -vf $name; done < "/var/db/Veiler/local/$MOONPKGNAME/files"
         fi
-    ;;
-    version)
-        echo "$MOONPKGVERSION"
     ;;
 esac
 EOF
+chmod +x MOONBUILD
