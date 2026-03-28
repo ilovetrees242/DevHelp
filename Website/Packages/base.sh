@@ -42,7 +42,6 @@ case $1 in
             else
                 make install
             fi
-            if [ $? -ne 0 ]; then echo -e "${ORANGE}"$MOONPKGNAME": Error: ${WHITE}Failed to install the package${NC}"; exit 1; fi
             cp -r /var/db/Veiler/sync/"$MOONPKGNAME"/ /var/db/Veiler/local &> /dev/null
         popd &> /dev/null
         if [ "$VEILERDOC" -eq 0 ]; then
