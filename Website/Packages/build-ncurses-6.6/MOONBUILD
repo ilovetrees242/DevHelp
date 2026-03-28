@@ -1,5 +1,6 @@
 #!/bin/bash
 source /var/db/Veiler/sync/ncurses/info
+trap 'echo -e "${BLUE}Interrupted. Goodbye!${NC}"' INT
 case $1 in
     getpkg)
         if [ ! -f "$MOONPKG.tar.gz" ]; then
