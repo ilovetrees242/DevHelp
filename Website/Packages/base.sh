@@ -1,6 +1,7 @@
 cat > MOONBUILD << "EOF"
 #!/bin/bash
 source /var/db/Veiler/sync/(package)/info
+trap 'echo -e "${BLUE}Interrupted. Goodbye!${NC}"; exit 1'
 case $1 in
     getpkg)
         if [ ! -f "$MOONPKG.tar.gz" ]; then
@@ -47,9 +48,9 @@ case $1 in
         if [ "$VEILERDOC" -eq 0 ]; then
             while read file; do
             if [ $VEILERQUIET -eq 1 ]; then
-                rm -f "$file"
+                rm -f "$VEILERDEST$file"
             else
-                rm -rfv "$file"
+                rm -rfv "$VEILERDEST$file"
             fi
             done < /var/db/Veiler/sync/"$MOONPKGNAME"/docfiles
         fi
