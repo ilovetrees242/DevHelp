@@ -1,7 +1,7 @@
 cat > MOONBUILD << "EOF"
 #!/bin/bash
 source /var/db/Veiler/sync/(package)/info
-trap 'echo -e "${BLUE}Interrupted. Goodbye!${NC}"; exit 1'
+trap 'echo -e "${BLUE}Interrupted. Goodbye!${NC}"; exit 1' INT
 case $1 in
     getpkg)
         if [ ! -f "$MOONPKG.tar.gz" ]; then
@@ -22,7 +22,6 @@ case $1 in
                 # build command goes here
                 make --quiet 
             popd &> /dev/null
-            set +e
         else
             tar xvf "$MOONPKG.tar.gz"
             if [ $? -ne 0 ]; then echo -e "${ORANGE}"$MOONPKGNAME": Error: Could not extract the package source tarball${NC}"; fi
@@ -32,18 +31,17 @@ case $1 in
                 # build command goes here
                 make
             popd
-            set +e
         fi
     ;;
     install)
         pushd $MOONPKG &> /dev/null
         # install command goes here
-            if [ $VEILERQUIET -eq 1 ]; then
-                make install > /dev/null    
-            else
-                make install
-            fi
-            cp -r /var/db/Veiler/sync/"$MOONPKGNAME"/ /var/db/Veiler/local &> /dev/null
+        if [ $VEILERQUIET -eq 1 ]; then
+            make install > /dev/null    
+        else
+            make install
+        fi
+        cp -r /var/db/Veiler/sync/"$MOONPKGNAME"/ /var/db/Veiler/local &> /dev/null
         popd &> /dev/null
         if [ "$VEILERDOC" -eq 0 ]; then
             while read file; do
