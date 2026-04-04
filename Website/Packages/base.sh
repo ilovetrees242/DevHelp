@@ -8,7 +8,7 @@ case $1 in
             if [ "$VEILERQUIET" -eq 1 ]; then 
                 wget -q --show-progress ""$SRC"/"$MOONPKG".tar.gz"
             else 
-                wget ""$SRC"/"$MOONPKG".tar.gz"
+                wget -nv --show-progress ""$SRC"/"$MOONPKG".tar.gz"
             fi
         fi
     ;;
