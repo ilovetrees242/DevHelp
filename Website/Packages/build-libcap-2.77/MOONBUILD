@@ -3,31 +3,33 @@ source "$VEILERDBPATH/sync/libcap/info"
 trap 'echo -e "${BLUE}Interrupted. Goodbye!${NC}"; exit 1' INT
 case $1 in
     getpkg)
-        if [ ! -f "$MOONPKG.tar.gz" ]; then
+        if [ ! -f "$MOONPKG.tar.xz" ]; then
             if [ "$VEILERQUIET" -eq 1 ]; then 
-                wget -q --show-progress ""$SRC"/"$MOONPKG".tar.gz"
+                wget -q --show-progress ""$SRC"/"$MOONPKG".tar.xz"
             else 
-                wget -nv --show-progress ""$SRC"/"$MOONPKG".tar.gz"
+                wget -nv --show-progress ""$SRC"/"$MOONPKG".tar.xz"
             fi
         fi
     ;;
     build)
         if [ -d "$MOONPKG" ]; then rm -rf "$MOONPKG"; fi
         if [ "$VEILERQUIET" -eq 1 ]; then
-            tar xf "$MOONPKG.tar.gz"
+            tar xf "$MOONPKG.tar.xz"
             pushd "$MOONPKG" &> /dev/null
+                sed -i '/install -m.*STA/d' libcap/Makefile
                 # configure command goes here
-                ./configure --prefix=/usr > /dev/null
+                true
                 # build command goes here
-                make --quiet 
+                make prefix=/usr lib=lib --quiet 
             popd &> /dev/null
         else
-            tar xvf "$MOONPKG.tar.gz"
+            tar xvf "$MOONPKG.tar.xz"
             pushd "$MOONPKG"
+                sed -i '/install -m.*STA/d' libcap/Makefile
                 # configure command goes here
-                ./configure --prefix=/usr
+                true
                 # build command goes here
-                make
+                make prefix=/usr lib=lib
             popd
         fi
     ;;
@@ -35,9 +37,9 @@ case $1 in
         pushd $MOONPKG &> /dev/null
         # install command goes here
         if [ $VEILERQUIET -eq 1 ]; then
-            make --quiet install 
+            make DESTDIR=$DESTDIR --quiet prefix=/usr lib=lib install 
         else
-            make install
+            make DESTDIR=$DESTDIR prefix=/usr lib=lib install
         fi
         popd &> /dev/null
         if [ "$VEILERDOC" -eq 0 ]; then
