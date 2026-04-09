@@ -36,9 +36,9 @@ case $1 in
         pushd $MOONPKG &> /dev/null
         # install command goes here
         if [ $VEILERQUIET -eq 1 ]; then
-            make --quiet install 
+            make DESTDIR=$DESTDIR --quiet install 
         else
-            make install
+            make DESTDIR=$DESTDIR install
         fi
         popd &> /dev/null
         if [ "$VEILERDOC" -eq 0 ]; then
@@ -61,3 +61,4 @@ case $1 in
 esac
 EOF
 chmod +x MOONBUILD
+touch integrity.sha256
