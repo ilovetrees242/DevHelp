@@ -1,5 +1,13 @@
+:root{
+    --light-yellow: #E3D89A;
+    --more-light-yellow: #E7DF9B;
+    --cool-yellow: #fde2a4;
+    --dark-cool-yellow: #FCE1A3;
+}
 body {
     background-color: #050505;
+    width: 100%;
+    overflow-x: hidden;
 }
 *{
     margin: 0;
@@ -23,11 +31,11 @@ body {
     bottom: 0;
     padding: 25px;
     color: #E6ECE6;
-    background: linear-gradient(45deg, #050506, #f7eba3);
+    background: linear-gradient(45deg, #050506, var(--dark-cool-yellow));
     position: absolute;
     width: 100%;
 }
-.nav a:nth-child(4) {
+.nav a:nth-child(5) {
     font-weight: bold;
 }
 .nav a {
@@ -35,12 +43,12 @@ body {
     display: block;
     text-align: center;
     padding: 30px;
-    background: linear-gradient(45deg, #ffea75 0%, #050505 50%);
+    background: linear-gradient(45deg, var(--cool-yellow) 0%, #050505 50%);
     background-size: 1000px;
     background-position: -560px;
     transition: 1s ease-in-out;
 }
-.nav a:hover{
+.nav a:hover {
     background-position: 0px;
 }
 .intro {
@@ -53,18 +61,7 @@ body {
     position: relative;
     top: 0;
     color: #ffffff;
-    border-bottom: solid 5px #F9E67D;
     background-color: #e3d89a;
-    border-radius: 5px;
-}
-.intro::before {
-    content: ".";
-    color: transparent;
-    background: linear-gradient(45deg, #F9E67D, #C3BA82 50%);
-    border-radius: 25px;
-    margin-right: 50px;
-    width: 20px;
-    height: 100px;
 }
 .abt .headers {
     margin: 0;
@@ -82,10 +79,11 @@ body {
     content: '.';
     color: transparent;
     height: 150px;
+    border-radius: 25px;
     position: absolute;
     margin-right: 25px;
     width: 25px;
-    background: linear-gradient(45deg, #FFEC80, #F5E270, #EAD867);
+    background-color: var(--light-yellow);
 }
 .abt {
     margin-left: 20%;
@@ -105,7 +103,7 @@ body {
 }
 .abt div:nth-of-type(1){
     height: 30px;
-    background-color: #f3eba3;
+    background-color: var(--more-light-yellow);
     color: #050505;
     font-size: 25px;
     text-align: center;
@@ -113,6 +111,9 @@ body {
 .headers .abtdev {
     margin-left: 40px;
     font-size: 18px;
+}
+#headp {
+    margin-top: 50px;
 }
 #headp:before {
     height: 400px;
@@ -123,7 +124,7 @@ ul {
     padding: 25px;
     border-radius: 15px;
     width: 75%;
-    background-color: #151516;
+    background-color: #101010;
     list-style-type: none;
 }
 li {
@@ -137,7 +138,7 @@ li::before {
 }
 footer {
     margin-top: 250px;
-    background-color: #e3d89a;
+    background-color: var(--dark-cool-yellow);
     padding: 25px;
 }
 footer a {

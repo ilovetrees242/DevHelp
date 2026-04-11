@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$VEILERDBPATH/sync/diffutils/info"
+source "$VEILERDBPATH/sync/gawk/info"
 trap 'echo -e "${BLUE}Interrupted. Goodbye!${NC}"; exit 1' INT
 case $1 in
     getpkg)

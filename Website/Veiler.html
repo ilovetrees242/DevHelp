@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Veiler documentation</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Veiler.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="Images/CW.png">
+    <link href="https://fonts.googleapis.com/css2?family=SN+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="nav">
+        <a href="linux.html">Linux</a>
+        <a href="c.html">C</a>
+        <a href="Packages/packages.html">Packages</a>
+        <a href="index.html">Home</a>
+        <div>
+            <h1>CoolWeb</h1>
+        </div>
+    </div>
+    <h1 class="intro">
+    	documentation for package manager
+    </h1>
+    <br>
+    <h1 class="bigheaders">
+        Introduction
+    </h1>
+    <h2 class="headers">
+    	About this package manager
+    </h2>	
+    <p class="para">This is a package manager made for Linux From Scratch for fun, not to be intended to be used with real distros. I know most of the code is unoptimized but hey it works. This package manager is made by one person and no AI. Inspired by pacman and portage</p>
+    <br>
+    <h2 class="headers">
+        Features about this package manager
+        <ul style="font-size: 18px; font-weight: 400">
+            <li>Can install packages
+            <li>Can unistall packages
+            <li>Source based
+            <li>A somewhat working dependency resolving algorithm
+            <li>Package integrity verification using checksums
+            <li>Uses a proper database with a structure
+            <li>Has some powerful options
+            <li>Different modes
+            <li>Allows you to not install documentation
+            <li>Allows you to run test suites
+            <li>Confirmation prompts
+            <li>Information related to disk spaces
+        </ul>
+    </h2>
+    <br>
+    <h2 class="headers">
+        What it cannot do
+        <ul style="font-weight: 400; font-size: 18px;">
+            <li>Use useflags
+            <li>Run hooks
+            <li>Do rollbacks
+            <li>Resolve conflicts
+            <li>Use multiple repos
+            <li>Use helpers
+        </ul>
+    </h2>
+    <br>
+    <h1 class="bigheaders">
+        Installing the package manager
+    </h1>
+    <br>
+    <p class="para">
+        To get started, run <b class="code">git clone https://github.com/ilovetrees242/Veiler.git</b></p>
+    <p class="para">
+        Once done, cd into the new cloned repo and run <b class="code">./install.sh</b> as <i>root</i></p>
+    <br>
+    <p class="para">
+    The package manager will install several directories and files, and the package manager itself into the root filesystem.</p>
+    <br>
+    <p class="para"><b class="code">/var/db/Veiler</b> : This is the default directory which the package manager uses to store its sync database and local database for the respective packages</p>
+    <br>
+    <ul style="margin-left: 20%;">
+        <li><b class="code">sync</b> : This directory contains the packages which the package manager uses to store the packages which are available on the package repo</li>
+        <br>
+        <li><b class="code">local</b> : This directory contains the packages which are currently installed on the local system</li>
+    </ul>
+    <br>
+    <p class="para"><b class="code">/etc/Veiler.conf</b> : The configuration file</p><br>
+    <p class="para"><b class="code">/var/cache/Veiler</b>: The default cache path for the package manger</p><br>
+    <p class="para"><b class="code">/usr/lib/Veiler</b> : The library directory for the package manager, which the package manager uses to store various libraries</p><br>
+    <h1 class="bigheaders">
+        Getting started
+    </h1><br>
+    <p class="para">Here are the basic operations you can do with the package manager: </p><br>
+    <ul style="color: white; margin-left: 20%;">
+        <li><b class="code">unveil</b> : This action is used to <i style="color: var(--cool-yellow)">install</i> a new package into the system, or <i>DEST</i> specified by the user</li><br>
+        <li><b class="code">veil</b> : This action is used to <i style="color: var(--cool-yellow)">uninstall</i> a package from the system <i style="color: red">permanently</i></li><br>
+        <li><b class="code">strengthen</b> : This action is used to <i style="color: var(--cool-yellow)">update</i> all the packages <i>installed</i> on the system</li><br>
+        <li><b class="code">search</b> : This action can be used to <i style="color: var(--cool-yellow)">search</i> packages or package on the <i>sync database</i></li><br>
+        <li><b class="code">help</b> : This action is used to display <i>summarised information</i> about using the package manager</li><br>
+        <li><b class="code">info</b> : This action is used to display the version, name and description of a package or packages which are/is <i>installed</i> on the system</li><br>
+        <li><b class="code">version</b> : This action is used to display the version <i>of the package manager</i></li><br>
+        <li><b class="code">rmpkg</b> : This action can be used to <i style="color: red">delete</i> all the occurences of the specified package(s) <i>in the cache directory</i></li><br>
+    </ul>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+:root{
+    --light-yellow: #E3D89A;
+    --more-light-yellow: #E7DF9B;
+    --cool-yellow: #fde2a4;
+    --dark-cool-yellow: #FCE1A3;
+}
+body {
+    background-color: #050505;
+    width: 100%;
+    overflow-x: hidden;
+}
+*{
+    margin: 0;
+    color: #ECE6E9;
+    font-family: "SN Pro";
+}
+.nav {
+    background-color: #050506;
+    width: 20%;
+    height: 100%;
+    position: fixed;
+    overflow: hidden;
+    border-image: linear-gradient(to top, #151414 0%, #f7eba3 100%) 1; 
+    border-right: 4px solid;
+    margin: 0;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+} 
+.nav div h1 {
+    bottom: 0;
+    padding: 25px;
+    color: #E6ECE6;
+    background: linear-gradient(45deg, #050506, var(--dark-cool-yellow));
+    position: absolute;
+    width: 100%;
+}
+.nav a:nth-child(4) {
+    font-weight: bold;
+}
+.nav a {
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(45deg, var(--cool-yellow) 0%, #050505 50%);
+    background-size: 1000px;
+    background-position: -560px;
+    transition: 1s ease-in-out;
+}
+.nav a:hover {
+    background-position: 0px;
+}
+.intro {
+    background: var(--light-yellow);
+    font-size: 75px;
+    padding: 50px;
+    width: 100%;
+    margin-left: 20%;
+    z-index: -1;
+}
+.bigheaders {
+    background: linear-gradient(45deg, #050506, var(--cool-yellow) 30%);
+    margin-left: 20%;
+    padding: 40px;
+    font-size: 50px;
+    width: 100%;
+    z-index: -1;
+}
+.headers {
+    margin-left: 21%;
+    font-size: 35px;
+}
+.para {
+    margin-left: 21%;
+    width: 70%;
+}
+.code {
+    background-color: #292929;
+    border-radius: 10px;
+    padding: 5px;
+}
+li {
+   color: #9f9f9f;
+}

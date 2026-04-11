@@ -1,8 +1,17 @@
+:root{
+    --light-yellow: #E3D89A;
+    --more-light-yellow: #f3dd94;
+    --cool-yellow: #fde2a4;
+    --dark-cool-yellow: #FCE1A3;
+    --very-dark-yellow: #DECD85;
+}
 body{
+    margin: 0;
     background-color: #161515;
+    overflow-x: hidden;
 }
 *{
-    color: #EED8E5;
+    color: #ECE6E9;
     font-family: "SN Pro";
 }
 .nav {
@@ -14,7 +23,7 @@ body{
     height: 100%;
     position: fixed;
     overflow: hidden;
-    border-image: linear-gradient(to top, #151414 0%, #BB9FC2 100%) 1; 
+    border-image: linear-gradient(to top, #151414 0%, var(--cool-yellow) 100%) 1; 
     border-right: 4px solid;
     margin: 0
 } 
@@ -25,47 +34,37 @@ body{
     bottom: 0;
     padding: 25px;
     color: #E6ECE6;
-    background: linear-gradient(45deg, #050505, #8C7289);
+    background: linear-gradient(45deg, #050505, var(--dark-cool-yellow));
     position: absolute;
     margin: 0px;
     width: 100%;
     font-weight: bold;
 }
-.nav a:not(:nth-of-type(4)) {
+.nav a:nth-child(4){
+    font-weight: bold;
+}
+.nav a {
     text-decoration: none;
     display: block;
     text-align: center;
-    padding: 25px;
-    background: linear-gradient(45deg, #ffddff 0%, #050505 50%);
+    padding: 30px;
+    background: linear-gradient(45deg, var(--cool-yellow) 0%, #050505 50%);
     background-size: 1000px;
     background-position: -560px;
     transition: 1s ease-in-out;
 }
-.nav a:nth-of-type(4) {
-    background-color: #BB9FC2;
-    padding: 25px;
-    display: block;
-    text-align: center;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 1s ease-in-out;
-    box-shadow: 0px 10px 55px 10px #BB9FC2;
-}
-.nav a:nth-of-type(4):hover {
-    box-shadow: 0px 15px 55px 15px #BE9BB2;
-    background-color: #BE9BB2;
-}
 .nav a:hover{
-    background-color: #C8A3BC;
     background-position: 0px;
 }
 .reponame {
-    border-radius: 15px;
-    padding: 75px;
+    padding: 50px;
     font-size: 75px;
-    margin-left: 21%;
     margin-top: 0px;
-    background-color: #BB9FC2;
+    margin-left: 19%;
+    width: 100%;
+    z-index: -1;
+    background-color: var(--light-yellow);
+    position: relative;
 }
 .reponame > b {
 	font-size: 72px;
@@ -77,7 +76,7 @@ body{
     width: 75%;
     margin: 5px;
     border-radius: 25px;
-    background: linear-gradient(to bottom, #B69BBD, #1F1F1F 50%);
+    background: linear-gradient(to bottom, var(--cool-yellow), #1F1F1F 50%);
     padding: 4px;
     border: none;
     margin-left: 21%;
@@ -116,14 +115,12 @@ body{
 
 }
 .pkgbox > .pkgdesc {
-    background-color: #90758D;
     color: #E6E0E3;
     width: 75%;
     padding: 7.5px;
     border-radius: 5px;
 }
 .pkgbox > .pkgver {
-    background-color: #BB9FC2;
     color: #E6E0E3;
     width: 75%;
     padding: 7.5px;
@@ -152,4 +149,8 @@ body{
 }
 .pkgbox > .insprogs {
    color: #ECE6E9; 
+}
+pre, code {
+    tab-size: 4;
+    -moz-tab-size: 4;
 }
