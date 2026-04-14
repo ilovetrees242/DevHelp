@@ -76,10 +76,15 @@ body {
     width: 70%;
 }
 .code {
-    background-color: #292929;
+    background-color: #C1AD7E;
     border-radius: 10px;
     padding: 5px;
 }
 li {
-   color: #9f9f9f;
+    list-style-type: none;
+    color: #dfdfdf;
+}
+li::before {
+    content: '• ';
+    color: var(--cool-yellow);
 }
