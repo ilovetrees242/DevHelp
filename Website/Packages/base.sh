@@ -13,6 +13,14 @@ case $1 in
         fi
     ;;
     build)
+        CONFIGPARAMS=()
+        for FLAG in ${USEFLAGS[@]}; do
+            case $FLAG in
+                *)
+                    CONFIGPARAMS+=("DUMY")
+                ;;
+            esac
+        done
         if [ -d "$MOONPKG" ]; then rm -rf "$MOONPKG"; fi
         if [ "$VEILERQUIET" -eq 1 ]; then
             tar xf "$MOONPKG.tar.gz"
@@ -36,9 +44,9 @@ case $1 in
         pushd $MOONPKG &> /dev/null
         # install command goes here
         if [ $VEILERQUIET -eq 1 ]; then
-            make DESTDIR=$DESTDIR --quiet install 
+            make DESTDIR=$PWD/DEST --quiet install 
         else
-            make DESTDIR=$DESTDIR install
+            make DESTDIR=$PWD/DEST install
         fi
         popd &> /dev/null
         if [ "$VEILERDOC" -eq 0 ]; then
