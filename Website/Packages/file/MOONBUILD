@@ -1,6 +1,5 @@
-cat > MOONBUILD << "EOF"
 #!/bin/bash
-source "$VEILERDBPATH/sync/(package)/info"
+source "$VEILERDBPATH/sync/file/info"
 trap 'echo -e "${BLUE}Interrupted. Goodbye!${NC}"; exit 1' INT
 case $1 in
     getpkg)
@@ -67,6 +66,3 @@ case $1 in
         fi
     ;;
 esac
-EOF
-chmod +x MOONBUILD
-touch integrity.sha256
