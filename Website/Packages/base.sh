@@ -26,7 +26,7 @@ case $1 in
             tar xf "$MOONPKG.tar.gz"
             pushd "$MOONPKG" &> /dev/null
                 # configure command goes here
-                ./configure --prefix=/usr > /dev/null
+                ./configure --prefix=/usr ${CONFIGPARAMS[@]} > /dev/null
                 # build command goes here
                 make --quiet 
             popd &> /dev/null
@@ -34,7 +34,7 @@ case $1 in
             tar xvf "$MOONPKG.tar.gz"
             pushd "$MOONPKG"
                 # configure command goes here
-                ./configure --prefix=/usr
+                ./configure --prefix=/usr ${CONFIGPARAMS[@]}
                 # build command goes here
                 make
             popd
@@ -51,9 +51,9 @@ case $1 in
             if [ "$VEILERDOC" -eq 0 ]; then
                 while read file; do
                     if [ $VEILERQUIET -eq 1 ]; then
-                        rm -f "$VEILERDEST$file"
+                        rm -f DEST/$file
                     else
-                        rm -rfv "$VEILERDEST$file"
+                        rm -rfv DEST/$file
                     fi
                 done < $VEILERDBPATH/sync/"$MOONPKGNAME"/docfiles
             fi
