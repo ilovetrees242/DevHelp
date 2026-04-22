@@ -1,0 +1,108 @@
+#!/bin/bash
+source "$VEILERDBPATH/sync/tcl/info"
+trap 'echo -e "${BLUE}Interrupted. Goodbye!${NC}"; exit 1' INT
+case $1 in
+    getpkg)
+        if [ ! -f "$MOONPKG-src.tar.gz" ]; then
+            if [ "$VEILERQUIET" -eq 1 ]; then 
+                wget -q --show-progress ""$SRC"/"$MOONPKG"-src.tar.gz"
+            else 
+                wget -nv --show-progress ""$SRC"/"$MOONPKG"-src.tar.gz"
+            fi
+        fi
+        if [ ! -f $MOONPKG-html.tar.gz ]; then
+            wget -q --show-progress $DOCSRC
+        fi
+    ;;
+    build)
+        CONFIGPARAMS=()
+        for FLAG in ${USEFLAGS[@]}; do
+            case $FLAG in
+                +DEBUG)
+                    CONFIGPARAMS+=( "--enable-symbols" )
+                ;;
+            esac
+        done
+        if [ -d "$MOONPKG" ]; then rm -rf "$MOONPKG"; fi
+        if [ "$VEILERQUIET" -eq 1 ]; then
+            tar xf "$MOONPKG-src.tar.gz"
+            pushd "$MOONPKG" &> /dev/null
+                SRCDIR=$(pwd)
+                cd unix
+                # configure command goes here
+                ./configure --prefix=/usr --disable-rpath --mandir=/usr/share/man ${CONFIGPARAMS[@]} > /dev/null
+                # build command goes here
+                make --quiet 
+                sed -e "s|$SRCDIR/unix|/usr/lib|" -e "s|$SRCDIR|/usr/include|" -i tclConfig.sh
+                sed -e "s|$SRCDIR/unix/pkgs/tdbc1.1.12|/usr/lib/tdbc1.1.12|" -e "s|$SRCDIR/pkgs/tdbc1.1.12/generic|/usr/include|" -e "s|$SRCDIR/pkgs/tdbc1.1.12/library|/usr/lib/tcl8.7|" -e "s|$SRCDIR/pkgs/tdbc1.1.12|/usr/include|" -i pkgs/tdbc1.1.12/tdbcConfig.sh
+                sed -e "s|$SRCDIR/unix/pkgs/itcl4.3.4|/usr/lib/itcl4.3.4|" -e "s|$SRCDIR/pkgs/itcl4.3.4/generic|/usr/include|" -e "s|$SRCDIR/pkgs/itcl4.3.4|/usr/include|" -i pkgs/itcl4.3.4/itclConfig.sh
+                if [ $VEILERTESTS -eq 1 ]; then
+                    make test --quiet > /dev/null 
+                fi
+            popd &> /dev/null
+        else
+            tar xvf "$MOONPKG-src.tar.gz"
+            pushd "$MOONPKG"
+                SRCDIR=$(pwd)
+                cd unix
+                # configure command goes here
+                ./configure --prefix=/usr --mandir=/usr/share/man --disable-rpath ${CONFIGPARAMS[@]}
+                # build command goes here
+                make
+                sed -e "s|$SRCDIR/unix|/usr/lib|" -e "s|$SRCDIR|/usr/include|" -i tclConfig.sh
+                sed -e "s|$SRCDIR/unix/pkgs/tdbc1.1.12|/usr/lib/tdbc1.1.12|" -e "s|$SRCDIR/pkgs/tdbc1.1.12/generic|/usr/include|" -e "s|$SRCDIR/pkgs/tdbc1.1.12/library|/usr/lib/tcl8.6|" -e "s|$SRCDIR/pkgs/tdbc1.1.12|/usr/include|" -i pkgs/tdbc1.1.12/tdbcConfig.sh
+                sed -e "s|$SRCDIR/unix/pkgs/itcl4.3.4|/usr/lib/itcl4.3.4|" -e "s|$SRCDIR/pkgs/itcl4.3.4/generic|/usr/include|" -e "s|$SRCDIR/pkgs/itcl4.3.4|/usr/include|" -i pkgs/itcl4.3.4/itclConfig.sh
+                if [ $VEILERTESTS -eq 1 ]; then
+                    make test
+                fi
+            popd
+        fi
+        unset SRCDIR
+    ;;
+    install)
+        pushd $MOONPKG &> /dev/null
+        # install command goes here
+            if [ $VEILERQUIET -eq 1 ]; then
+                cd unix
+                make DESTDIR=$PWD/DEST --quiet install 
+                chmod 644 DEST/usr/lib/libtclstub8.6.a
+                chmod u+w DEST/usr/lib/libtcl8.6.so
+                ln -sf tclsh8.6 DEST/usr/bin/tclsh
+                mv DEST/usr/share/man/man3/{Thread,Tcl_Thread}.3
+                mv DEST ..
+                cd ..
+                tar -xf ../tcl8.6.17-html.tar.gz --strip-components=1
+                mkdir -p DEST/usr/share/doc/tcl-8.6.17
+                cp -r  ./html/* DEST/usr/share/doc/tcl-8.6.17
+            else
+                cd unix
+                make DESTDIR=$PWD/DEST install
+                chmod -v 644 DEST/usr/lib/libtclstub8.6.a
+                chmod -v u+w /usr/lib/libtcl8.6.so
+                ln -sfv tclsh8.6 DEST/usr/bin/tclsh
+                mv DEST/usr/share/man/man3/{Thread,Tcl_Thread}.3
+                mv DEST ..
+                cd ..
+                tar -xvf ../tcl8.6.17-html.tar.gz --strip-components=1
+                mkdir -v -p DEST/usr/share/doc/tcl-8.6.17
+                cp -v -r  ./html/* DEST/usr/share/doc/tcl-8.6.17
+            fi
+            if [ "$VEILERDOC" -eq 0 ]; then
+                while read file; do
+                    if [ $VEILERQUIET -eq 1 ]; then
+                        rm -f DEST/$file
+                    else
+                        rm -rfv DEST/$file
+                    fi
+                done < $VEILERDBPATH/sync/"$MOONPKGNAME"/docfiles
+            fi
+        popd &> /dev/null
+    ;;
+    uninstall)
+        if [ $VEILERQUIET -eq 1 ]; then
+            while read name; do rm -f $name; done < "$VEILERDBPATH/local/$MOONPKGNAME/files"
+        else
+            while read name; do rm -vf $name; done < "$VEILERDBPATH/local/$MOONPKGNAME/files"
+        fi
+    ;;
+esac
