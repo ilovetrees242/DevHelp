@@ -48,23 +48,7 @@ case $1 in
             else
                 make DESTDIR=$PWD/DEST install
             fi
-            if [ "$VEILERDOC" -eq 0 ]; then
-                while read file; do
-                    if [ $VEILERQUIET -eq 1 ]; then
-                        rm -f DEST/$file
-                    else
-                        rm -rfv DEST/$file
-                    fi
-                done < $VEILERDBPATH/sync/"$MOONPKGNAME"/docfiles
-            fi
         popd &> /dev/null
-    ;;
-    uninstall)
-        if [ $VEILERQUIET -eq 1 ]; then
-            while read name; do rm -f $name; done < "$VEILERDBPATH/local/$MOONPKGNAME/files"
-        else
-            while read name; do rm -vf $name; done < "$VEILERDBPATH/local/$MOONPKGNAME/files"
-        fi
     ;;
 esac
 EOF
