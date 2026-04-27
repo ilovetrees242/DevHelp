@@ -11,6 +11,18 @@
     <link href="https://fonts.googleapis.com/css2?family=SN+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="mob-nav">
+        <div>
+            <h1>CoolWeb</h1>
+	    <div class="btn">≡</div>
+        </div>
+    </div>
+    <div class="mob-nav-panel">
+        <a href="linux.html">Linux</a>
+        <a href="c.html">C</a>
+        <a href="Packages/packages.html">Packages</a>
+        <a href="index.html">Home</a>	
+    </div>
     <div class="nav">
         <a href="linux.html">Linux</a>
         <a href="c.html">C</a>
@@ -35,10 +47,11 @@
     <br>
     <h2 class="headers">
         Features about this package manager
-        <ul style="font-size: 18px; font-weight: 400">
+        <ul style="font-size: 18px; font-weight: 400; margin-left: 0%;">
             <li>Can install packages
             <li>Can unistall packages
             <li>Source based
+            <li>Useflags are supported 
             <li>A somewhat working dependency resolving algorithm
             <li>Package integrity verification using checksums
             <li>Uses a proper database with a structure
@@ -53,14 +66,13 @@
     <br>
     <h2 class="headers">
         What it cannot do
-        <ul style="font-weight: 400; font-size: 18px;">
-            <li>Use useflags
+        <ul style="font-weight: 400; font-size: 18px; margin-left: 0%;">
             <li>Run hooks
             <li>Do rollbacks
             <li>Resolve conflicts
             <li>Use multiple repos
             <li>Use helpers
-            <li>Use helpers
+            <li>Resolve circular dependencies
         </ul>
     </h2>
     <br>
@@ -78,7 +90,7 @@
     <br>
     <p class="para"><b class="code">/var/db/Veiler</b> : This is the default directory which the package manager uses to store its sync database and local database for the respective packages</p>
     <br>
-    <ul style="margin-left: 20%;">
+    <ul>
         <li><b class="code">sync</b> : This directory contains the packages which the package manager uses to store the packages which are available on the package repo</li>
         <br>
         <li><b class="code">local</b> : This directory contains the packages which are currently installed on the local system</li>
@@ -91,7 +103,7 @@
         Getting started
     </h1><br>
     <p class="para">Here are the basic operations you can do with the package manager: </p><br>
-    <ul style="color: white; margin-left: 20%;">
+    <ul>
         <li><b class="code">unveil</b> : This action is used to <i style="color: var(--cool-yellow)">install</i> a new package into the system, or <i>DEST</i> specified by the user</li><br>
         <li><b class="code">veil</b> : This action is used to <i style="color: var(--cool-yellow)">uninstall</i> a package from the system <i style="color: red">permanently</i></li><br>
         <li><b class="code">strengthen</b> : This action is used to <i style="color: var(--cool-yellow)">update</i> all the packages <i>installed</i> on the system</li><br>
@@ -101,6 +113,40 @@
         <li><b class="code">version</b> : This action is used to display the version <i>of the package manager</i></li><br>
         <li><b class="code">rmpkg</b> : This action can be used to <i style="color: red">delete</i> all the occurences of the specified package(s) <i>in the cache directory</i></li><br>
     </ul>
-
+    <br>
+    <h1 class="bigheaders">Installing a package</h1>
+    <br>
+    <p class="para">To install a package, you must run <b class="code">sudo Veiler unveil [PKGNAME] [OPTIONS]</b></p>
+    <br>
+    <p class="para">Example packages can be acl, gettext, neofetch, which, bash, etc. Please note that the build scripts for these packages must be formatted correctly else it will perform wrong instructions</p>
+    <h2 class="headers">Using the options</h2>
+    <br>
+    <ul>
+	<li><b class="code">--quiet:</b> This option makes the package manager output way less verbose information while building and installing the packages. Normally the package manager will output very verbose messages, with this option, <i style="color: var(--cool-yellow)">unimportant messages are supressed.</i> For example, <b class="code">Make check</b> outputs alot of messages as test suites are quite large, so with --quiet there will be comparitively less messages</li><br>
+	<li><b class="code">--ask:</b> This option gives a <i style="color: var(--cool-yellow)">confirmation prompt</i> before performing an installation, system upgrade or uninstallation. You can use this to see what packages are being updated, how much disk space is required and what dependencies are being installed before being directly taken to the build process</li><br>
+	<li><b class="code">--documentation:</b> This option allows the installation of documentation for <i style="color: var(--cool-yellow)">all packages</i>. This option exists to reduce bloat on the system, although some documentation we actually do use frequently, like for coreutils.</li><br>
+	<div class="note">
+	    <div>Note </div>
+	    <p>Man pages and info files are counted as documentation.</p>
+	</div>
+	<br>
+	<li><b class="code">--test:</b> This <i style="color: var(--cool-yellow)">runs test suites after building a package</i> ( if supported ). Test suites take really long and fail often so the package manager does not run them by default. You can if you want to though, its good to check if a package has been built correctly and properly </li><br>
+	<li><b class="code">--no-root:</b> This option <i style="color: var(--cool-yellow)">won't ask you to become a root user.</i> You can use this option in pair with the <b>--with-dest</b> option to build and install packages whose final files will be owned by the current user. If you try to use this option and the <b>$VEILERDEST</b> variable contains a priveledged directory, then you will likely hit permission denied errors at the end. Also make sure that all the tarballs which will end up in <b>$VEILERCACHEPATH</b> will be readable and writable by the current user. Otherwise you will hit errors while extracting the build tarballs. Or use a different $VEILERCACHEPATH as an unpriveledged directory<br>Also note that the files in <b>$VEILERDBPATH</b> should also atleast be readable, but not writable ( usually )</li><br>
+	<li><b class="code">--skip-clean:</b> This option <i style="color: var(--cool-yellow)">does not delete every cached directory of a package</i>, before performing installation, uninstallation or system upgrade again.<br>In other words, this will cause the package manager to keep the files which were downloaded in the build directory. This can be useful when you are building a package but the integrity for the build script or the source tarball could not be verified. So if the package integrity for the build script failed you can still keep the source tarball ( or you can use <b>--skip-integrity</b> option to not verify package integrity. Note that sometimes this can cause dirty builds</li><br>
+	<div class="imp">
+	    <div>Important </div>
+	    <p><i style="color: var(--cool-yellow)">The actual source directories are still cleaned</i>. So for example, if you are building which-2.23 and then you use <b>--skip-clean</b> option, then the build directory will not be wiped, but the source directory will be deleted and created again. So the compilation starts again.</p>
+	</div>
+	<br>
+	<li><b class="code">--skip-integrity:</b> Using this option, <i style="color: var(--cool-yellow)">you can choose to not verify package integrity for a package</i>. If you think the package provider is trusted and the build script is valid, then you can use this option incase integrity verification failed. Please note that this will make the package manager trust the buildscript and the source tarball 100%. You can also choose to skip integrity incase the package maintainer ( me ) failed to update checksums after updating the build script.</li><br>
+	<div class="note">
+	    <div>Note </div>
+	    <p>This package manager does not really focus alot of security, but more on downloading non-corrupted files which are valid. But still this can raise a security issue</p>
+	</div>
+	<br>
+	<li><b class="code">--megabytes: </b> If this option is enabled, the <i style="color: var(--cool-yellow)">sizes will be displayed in megabytes ( MiB )</i> instead of kilobytes ( KiB ). Those "sizes" are the sizes related to disk space required, download size, installed size and installed size without documentation</li><br>
+	<li><b class="code">--skip-deps: </b> This option will make the package manager <i style="color: var(--cool-yellow)">not resolve any dependencies for the package</i>, including optional dependencies. So <i style="color: var(--cool-yellow)">incase the package manager failed to resolve the dependencies of a package properly</i>, then you can use this option to manually make the package manager assume there are already dependencies installed on the system. However, it is advised to let the package manager resolve dependencies if it can, else you will hit errors at the configure stage</li><br>
+	<li><b class="code">--no-errexit: </b></li><br>
+    </ul>
 </body>
 </html>

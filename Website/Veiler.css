@@ -6,7 +6,6 @@
 }
 body {
     background-color: #050505;
-    width: 100%;
     overflow-x: hidden;
 }
 *{
@@ -14,9 +13,68 @@ body {
     color: #ECE6E9;
     font-family: "SN Pro";
 }
+.mob-nav {
+    display: none;
+    width: 100%;
+    height: 50px;
+    background-color: #111010;
+    position: fixed;
+    padding-bottom: 20px;
+    padding-left: 25px;
+    top: 0;
+    z-index: 99;
+}
+.mob-nav .btn {
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    font-size: 45px;
+}
+.mob-nav .btn:hover {
+    cursor: pointer;
+}
+.mob-nav div h1 {
+    bottom: 0;
+    color: #E6ECE6;
+    background: linear-gradient(45deg, #050506, var(--dark-cool-yellow));
+    width: 50%;
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+}
+.mob-nav-panel a {
+    display: block;
+    overflow: hidden;
+    text-align: center;
+    padding: 25px;
+    text-decoration: none;
+    background-color: #A6956D;
+}
+.mob-nav-panel a:hover {
+    background-color: #8E7F5D;
+    cursor: pointer;
+}
+.mob-nav-panel:hover {
+    transform: translateX(0vw);
+}
+.mob-nav-panel {
+    transform: translateX(-100vw);
+    margin-top: 20px;
+    z-index: 999;
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(15, 15, 16, 0.2);
+    backdrop-filter: blur(2px);
+    transition: 2s ease-in-out;
+}
+.mob-nav:has(.btn:hover) + .mob-nav-panel {
+    transform: translateX(0vw);
+    box-shadow: 5px 5px 50px black;
+}
 .nav {
     background-color: #050506;
-    width: 20%;
+    width: 20vw;
     height: 100%;
     position: fixed;
     overflow: hidden;
@@ -44,8 +102,9 @@ body {
     text-align: center;
     padding: 30px;
     background: linear-gradient(45deg, var(--cool-yellow) 0%, #050505 50%);
+    background-repeat: no-repeat;
     background-size: 1000px;
-    background-position: -560px;
+    background-position: calc(-30vw + 20%);
     transition: 1s ease-in-out;
 }
 .nav a:hover {
@@ -55,16 +114,16 @@ body {
     background: var(--light-yellow);
     font-size: 75px;
     padding: 50px;
-    width: 100%;
     margin-left: 20%;
     z-index: -1;
+    word-break: break-all;
+    margin-top: 50px;
 }
 .bigheaders {
     background: linear-gradient(45deg, #050506, var(--cool-yellow) 30%);
     margin-left: 20%;
     padding: 40px;
     font-size: 50px;
-    width: 100%;
     z-index: -1;
 }
 .headers {
@@ -73,7 +132,7 @@ body {
 }
 .para {
     margin-left: 21%;
-    width: 70%;
+    width: 80%;
 }
 .code {
     background-color: #C1AD7E;
@@ -84,7 +143,76 @@ li {
     list-style-type: none;
     color: #dfdfdf;
 }
+ul {
+    margin-left: 20%;
+}
 li::before {
     content: '• ';
     color: var(--cool-yellow);
+}
+.note {
+    width: 60%;
+    position: relative;
+    background-color: #202020;
+}
+.note p {
+    padding: 25px;
+}
+.note div {
+    background-color: #C5B283;
+    text-align: center;
+    padding: 20px;
+    font-size: 25px;
+}
+.imp {
+    width: 60%;
+    position: relative;
+    background-color: #202020;
+}
+.imp p {
+    padding: 25px;
+}
+.imp div {
+    background-color: #C5B283;
+    text-align: center;
+    padding: 20px;
+    font-size: 25px;
+}
+
+.warn {
+    width: 60%;
+    position: relative;
+    background-color: #202020;
+}
+.warn p {
+    padding: 25px;
+}
+.warn div {
+    background-color: orange;
+    text-align: center;
+    padding: 20px;
+    font-size: 25px;
+}
+@media all and (max-width: 830px) {
+    .intro {
+        font-size: 50px;
+	margin-left: 0;
+    }
+    .nav {
+        display: none; 
+    }
+    .bigheaders {
+        background: linear-gradient(45deg, #050506, var(--cool-yellow) 70%);
+        margin-left: 0px;
+    }
+    .headers, .para, .note, .warn, .imp {
+        margin-left: 5px;
+    }
+    ul {
+        margin: 5px;
+        padding-left: 30px;
+    }
+    .mob-nav {
+        display: block;
+    }
 }
