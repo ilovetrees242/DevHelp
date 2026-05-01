@@ -73,7 +73,7 @@
         Features about this package manager
         <ul style="font-size: 18px; font-weight: 400; margin-left: 0%;">
             <li>Can install packages
-            <li>Can unistall packages
+            <li>Can uninstall packages
             <li>Source based
             <li>Useflags are supported 
             <ul style="margin: 0">
@@ -138,7 +138,7 @@
     <br>
     <p class="para"><b class="code">/etc/Veiler/veiler.conf</b> : The configuration file. See <i><a class="special-word" href="#configfile">Using the configuration file</a></i> for more information</p><br>
     <p class="para"><b class="code">/etc/Veiler/package.use</b> : File containing local useflags for specific packages</p><br>
-    <p class="para"><b class="code">/var/cache/Veiler</b> : The default cache path for the package manger</p><br>
+    <p class="para"><b class="code">/var/cache/Veiler</b> : The default cache path for the package manager</p><br>
     <p class="para"><b class="code">/usr/lib/Veiler</b> : The library directory for the package manager, which the package manager uses to store data</p><br>
     <h1 class="bigheaders">
         Getting started
@@ -149,15 +149,15 @@
         <li><b class="code">unveil</b> : This action is used to <i class="special-word">install</i> a new package into the system, or <i>DEST</i> specified by the user</li><br>
         <li><b class="code">veil</b> : This action is used to <i class="special-word">uninstall</i> a package from the system <i class="danger-word">permanently</i></li><br>
         <li><b class="code">strengthen</b> : This action is used to <i class="special-word">update</i> all the packages <i>installed</i> on the system</li><br>
-        <li><b class="code">search</b> : This action can be used to <i class="special-word">search</i> packages or package on the <i>sync database</i></li><br>
+        <li><b class="code">search</b> : This action can be used to <i class="special-word">search</i> packages or a package on the <i>sync database</i></li><br>
         <li><b class="code">help</b> : This action is used to display <i class="special-word">summarised information</i> about using the package manager</li><br>
         <li><b class="code">info</b> : This action is used to display the version, name and description of a package or packages which are/is <i>installed</i> on the system</li><br>
         <li><b class="code">version</b> : This action is used to display the version <i class="special-word">of the package manager</i></li><br>
-        <li><b class="code">rmpkg</b> : This action can be used to <i class="danger-word">delete</i> all the occurences of the specified package(s) <i>in the cache directory</i></li><br>
+        <li><b class="code">rmpkg</b> : This action can be used to <i class="danger-word">delete</i> all the occurrences of the specified package(s) <i>in the cache directory</i></li><br>
     </ul>
     <div id="cautions"></div>
     <h2 class="headers">Cautions</h2>
-    <p class="para">Note that <i class="danger-word">anything can break at anytime</i>. I strongly advise you to use the <i class="special-word">--no-root</i> to avoid maximum breakages. But note that I do appreciate you for using my package manager. Also sometimes the buildscript might break sometimes if I forgot to format it correctly</p>
+    <p class="para">Note that <i class="danger-word">anything can break at any time</i>. I strongly advise you to use the <i class="special-word">--no-root</i> to avoid maximum breakages. But note that I do appreciate you for using my package manager. Also sometimes the buildscript might break sometimes if I forgot to format it correctly</p>
     <br>
     <h1 class="bigheaders">Installing a package</h1>
     <br>
@@ -167,7 +167,7 @@
     <h2 class="headers">Using the options</h2>
     <br>
     <ul>
-	<li><b class="code">--quiet:</b> This option makes the package manager output way less verbose information while building and installing the packages. Normally the package manager will output very verbose messages, with this option, <i class="special-word">unimportant messages are supressed.</i> For example, <b class="code">Make check</b> outputs alot of messages as test suites are quite large, so with --quiet there will be comparitively less messages</li><br>
+	<li><b class="code">--quiet:</b> This option makes the package manager output way less verbose information while building and installing the packages. Normally the package manager will output very verbose messages, with this option, <i class="special-word">unimportant messages are suppressed.</i> For example, <b class="code">Make check</b> outputs a lot of messages as test suites are quite large, so with --quiet there will be comparatively less messages</li><br>
 	<li><b class="code">--ask:</b> This option gives a <i class="special-word">confirmation prompt</i> before performing an installation, system upgrade or uninstallation. You can use this to see what packages are being updated, how much disk space is required and what dependencies are being installed before being directly taken to the build process</li><br>
 	<li><b class="code">--documentation:</b> This option allows the installation of documentation for <i class="special-word">all packages</i>. This option exists to reduce bloat on the system, although some documentation we actually do use frequently, like for coreutils.</li><br>
 	<div class="note">
@@ -176,32 +176,32 @@
 	</div>
 	<br>
 	<li><b class="code">--test:</b> This <i class="special-word">runs test suites after building a package</i> ( if supported ). Test suites take really long and fail often so the package manager does not run them by default. You can if you want to though, its good to check if a package has been built correctly and properly </li><br>
-	<li><b class="code">--no-root:</b> This option <i class="special-word">won't ask you to become a root user.</i> You can use this option in pair with the <b>--with-dest</b> option to build and install packages whose final files will be owned by the current user. If you try to use this option and the <b>$VEILERDEST</b> variable contains a priveledged directory, then you will likely hit permission denied errors at the end. Also make sure that all the tarballs which will end up in <b>$VEILERCACHEPATH</b> will be readable and writable by the current user. Otherwise you will hit errors while extracting the build tarballs. Or use a different $VEILERCACHEPATH as an unpriveledged directory<br>Also note that the files in <b>$VEILERDBPATH</b> should also atleast be readable, but not writable ( usually )</li><br>
+	<li><b class="code">--no-root:</b> This option <i class="special-word">won't ask you to become a root user.</i> You can use this option in pair with the <b>--with-dest</b> option to build and install packages whose final files will be owned by the current user. If you try to use this option and the <b>$VEILERDEST</b> variable contains a privileged directory, then you will likely hit permission denied errors at the end. Also make sure that all the tarballs which will end up in <b>$VEILERCACHEPATH</b> will be readable and writable by the current user. Otherwise you will hit errors while extracting the build tarballs. Or use a different $VEILERCACHEPATH as an unprivileged directory<br>Also note that the files in <b>$VEILERDBPATH</b> should also at least be readable, but not writable ( usually )</li><br>
 	<li><b class="code">--skip-clean:</b> This option <i class="special-word">does not delete every cached directory of a package</i>, before performing installation, uninstallation or system upgrade again.<br>In other words, this will cause the package manager to keep the files which were downloaded in the build directory. This can be useful when you are building a package but the integrity for the build script or the source tarball could not be verified. So if the package integrity for the build script failed you can still keep the source tarball ( or you can use <b>--skip-integrity</b> option to not verify package integrity. ) Note that sometimes this can cause dirty builds</li><br>
 	<div class="imp">
 	    <div>Important </div>
 	    <p><i class="special-word">The actual source directories are still cleaned</i>. So for example, if you are building which-2.23 and then you use <b>--skip-clean</b> option, then the build directory will not be wiped, but the source directory will be deleted and created again. So the compilation starts again.</p>
 	</div>
 	<br>
-	<li><b class="code">--skip-integrity:</b> Using this option, <i class="special-word">you can choose to not verify package integrity for a package</i>. If you think the package provider is trusted and the build script is valid, then you can use this option incase integrity verification failed. Please note that this will make the package manager trust the buildscript and the source tarball 100%. You can also choose to skip integrity incase the package maintainer ( me ) failed to update checksums after updating the build script.</li><br>
+	<li><b class="code">--skip-integrity:</b> Using this option, <i class="special-word">you can choose to not verify package integrity for a package</i>. If you think the package provider is trusted and the build script is valid, then you can use this option in case integrity verification failed. Please note that this will make the package manager trust the buildscript and the source tarball 100%. You can also choose to skip integrity in case the package maintainer ( me ) failed to update checksums after updating the build script.</li><br>
 	<div class="note">
 	    <div>Note </div>
-	    <p>This package manager does not really focus alot of security, but more on downloading non-corrupted files which are valid. But still this can raise a security issue</p>
+	    <p>This package manager does not really focus a lot of security, but more on downloading non-corrupted files which are valid. But still this can raise a security issue</p>
 	</div>
 	<br>
 	<li><b class="code">--megabytes: </b> If this option is enabled, the <i class="special-word">sizes will be displayed in megabytes ( MiB )</i> instead of kilobytes ( KiB ). Those "sizes" are the sizes related to disk space required, download size, installed size, installed size without documentation and upgrade sizes</li><br>
-	<li><b class="code">--skip-deps: </b> This option will make the package manager <i class="special-word">not resolve any dependencies for the package</i>, including optional dependencies. So <i style="color: var(--cool-yellow)">incase the package manager failed to resolve the dependencies of a package properly</i>, then you can use this option to manually make the package manager assume there are already dependencies installed on the system. However, it is advised to let the package manager resolve dependencies if it can, else you will hit errors at the configure stage</li><br>
+	<li><b class="code">--skip-deps: </b> This option will make the package manager <i class="special-word">not resolve any dependencies for the package</i>, including optional dependencies. So <i style="color: var(--cool-yellow)">in case the package manager failed to resolve the dependencies of a package properly</i>, then you can use this option to manually make the package manager assume there are already dependencies installed on the system. However, it is advised to let the package manager resolve dependencies if it can, else you will hit errors at the configure stage</li><br>
     <li><b class="code">--no-errexit: </b> Using this option, you can choose to <i class="special-word">skip exiting upon errors encountered</i> during buildtime and installtime ONLY</li><br>
     <li><b class="code">--skip-description: </b> Using this option along with the <i class="special-word">search</i> operation, you can tell the package manager to only search for packages in the sync database by names, and not by matching the description and the name itself.</li>
     <h2>Example case</h2>
-    <p>Lets say you want to search the package "which" in the package managers's database, and by name only not description. If you omit <b>--skip-description</b> then the package manager will also search the arguments you provided to it in the packages's descriptions.</p>
+    <p>Lets say you want to search the package "which" in the package manager's database, and by name only not description. If you omit <b>--skip-description</b> then the package manager will also search the arguments you provided to it in the packages's descriptions.</p>
     <br>
     <li><b class="code">--skip-installed: </b> This option will make the package manager <i class="special-word">skip installing the packages which are already installed on the system</i>. Suppose you want to install the following packages: <i class="special-word">which bash neofetch fastfetch</i>. And you already have neofetch installed and you want to skip building and installing the packages which are already installed on the system. Then in that case you can use <b>--skip-installed</b> option to skip building packages which are already installed, which in this case will make the package manager install the following: <i class="special-word">which bash fastfetch</i></li><br>
     <li><b class="code">--with-dest: </b> This option requires an additional argument to be used. Using this option, you can choose to <i class="special-word">install packages in a custom directory</i> instead of the default directory /. Note that argument provided to this option must be an <i class="special-word">absolute path</i>, otherwise it can cause issues at install time.</li><br>
     </ul><br>
     <h1 class="bigheaders" id="configfile">Using the configuration file</h1><br>
     <h2 class="headers">Introduction</h2>
-    <p class="para">You will find the configuration file for Veiler at /etc/Veiler/veiler.conf after installing the package manager. You can use the configuration file to set default options everytime you perform an action with the package manager instead of having to use options again and again</p>
+    <p class="para">You will find the configuration file for Veiler at /etc/Veiler/veiler.conf after installing the package manager. You can use the configuration file to set default options every time you perform an action with the package manager instead of having to use options again and again</p>
     <h2 class="headers">Variables</h2>
     <h3 class="headers" style="font-size: 20px;"> A table of variables which are valid </h3>
     <table>
@@ -218,7 +218,7 @@
         <tr><td>VEILERSKIPDEPS</td><td>To enable or disable dependency resolution (for optional dependencies too if you have local useflags set)</td></tr>
         <tr><td>VEILERSKIPINST</td><td>To enable or disable skipping building packages which are already installed</td></tr>
         <tr><td>VEILERSKIPDESC</td><td>To enable or disable matching arguments provided to search with package descriptions too</td></tr>
-        <tr><td>VEILERNOROOT</td><td>To enable or disable needing superuser priveledges for building packages</td></tr>
+        <tr><td>VEILERNOROOT</td><td>To enable or disable needing superuser privileges for building packages</td></tr>
         <tr class="op"><th colspan="4">Path variables</th></tr>
         <tr class="heading"><th>Name</th><th>Type</th><th>Description</th><th>Usage</th></tr>
         <tr><td>VEILERDEST</td><td>String</td><td>This variable contains the final destination where packages will be installed. Default value is <i class="special-word">/ ( root directory ).</i> Changing it will require it to be an absolute path, otherwise package manager will break<td>Provide an absolute path to the directory you want to install packages into. Example: <i class="special-word">/home/LFS/Dest</i></td></tr>
@@ -229,7 +229,7 @@
     </table>
 
     <h1 class="bigheaders">How it works</h1><br>
-    <p class="para">In my opinion, this package manager is fairly one of the most simplest package managers I have seen out of all. Mainly due to this package manager focusing more on installing and building the packages instead of running extra things. So here is how it works under the hood: </p>
+    <p class="para">In my opinion, this package manager is fairly one of the simplest package managers I have seen out of all. Mainly due to this package manager focusing more on installing and building the packages instead of running extra things. So here is how it works under the hood: </p>
     <h2 class="headers">Unveil</h2>
     <div class="specpara">--- Stages ---
         <div> Check if the current user is root </div>
