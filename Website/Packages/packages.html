@@ -5,6 +5,7 @@
     <title>Package Repository</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel=stylesheet href="packages.css">
+	<link rel=stylesheet href="../navbar.css">
     <meta charset="utf-8">
     <meta name="viewport" content="device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +14,18 @@
     <link href="https://fonts.googleapis.com/css2?family=SN+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="mob-nav">
+        <div>
+            <h1>CoolWeb</h1>
+            <div class="btn">≡</div>
+        </div>
+    </div>
+    <div class="mob-nav-panel">
+        <a href="linux.html">Linux</a>
+        <a href="c.html">C</a>
+        <a href="../Veiler.html">Veiler ( package manager )</a>
+        <a href="../index.html">Home</a>
+    </div>
     <div class="nav">
         <a href="linux.html">Linux</a>
         <a href="c.html">C</a>
@@ -34,7 +47,7 @@
     </div>
 
 	<div class="pkgbox" style="height: auto; padding-bottom: 5px;">
-	    <a class="pkg" href="acl.tar.gz">acl</a>
+	    <a class="pkg" href="build-acl-2.3.2.tar.gz">acl</a>
         <p class="pkgdesc"><b>Package description: </b>The ACL (Access Control Lists) provide an extended permission mechanism in Linux that allows you to set specific permissions for individual users or groups beyond standard rwx for user/groups/other permissions.</p>
 		<p class="pkgver"><b>Package version:</b> 2.3.2</p>
 		<p class="example"><b>Example of using getfacl from ACL:</b></p>
@@ -55,7 +68,7 @@
 	</div>
 
 	<div class="pkgbox" style="padding-bottom: 20px;">
-	    <a id="attr" class="pkg" href="attr.tar.gz" style="scroll-margin-top: 80px;">
+	    <a id="attr" class="pkg" href="build-attr-2.5.2.tar.gz" style="scroll-margin-top: 80px;">
             attr
         </a>
 		<p class="pkgdesc"><b>Package description: </b>Extended attribute support library beyond standard file attributes (permissions, ownerships)</p>
@@ -75,7 +88,7 @@
     </div>
 
 	<div class="pkgbox">
-		<a class="pkg" href="which.tar.gz">which</a>
+		<a class="pkg" href="build-bc-7.0.3.tar.gz">bc</a>
 		<p class="pkgdesc"><b>Package description: </b>The which utility is a program which is used to locate programs on a users PATH enviroment variable.</p>
 		<p class="pkgver"><b>Package version:</b> 2.24</p>
 		<p class="example"><b>Example of using the which utility:</b></p>
@@ -90,7 +103,7 @@
 	</div>
 
 	<div class="pkgbox" style="height: 950px;">
-	    <a class="pkg" href="neofetch.tar.gz">neofetch</a>
+	    <a class="pkg" href="build-neofetch-7.1.0.tar.gz">neofetch</a>
 		<p class="pkgdesc"><b>Package description: </b>System information utiltiy used to display information like the kernel name, distro name uptime, packages installed, etc</p>
 		<p class="pkgver"><b>Package version:</b> 7.1.0</p>
 		<p class="example"><b>Example of using neofetch:</b></p>
@@ -117,5 +130,21 @@
         </pre>
         <p class="insprogs">Installed Programs: neofetch</p>
 	</div>
+
+	<div class="pkgbox">
+		<a class="pkg" href="build-which-2.23.tar.gz">which</a>
+		<p class="pkgdesc"><b>Package description: </b>The which utility is a program which is used to locate programs on a users PATH enviroment variable.</p>
+		<p class="pkgver"><b>Package version:</b> 2.23</p>
+		<p class="example"><b>Example of using the which utility:</b></p>
+        <pre>
+        <code>
+ LFS@Hp440G8: ~ $ which ls 
+ /usr/bin/ls               
+ LFS@Hp440G8: ~ $
+        </code>
+        </pre>
+        <p class="insprogs">Installed Programs: which</p>
+	</div>
+
 </body>
 </html>

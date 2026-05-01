@@ -14,47 +14,9 @@ body {
     color: #EED8E5;
     font-family: "SN Pro";
 }
-.nav {
-    background-color: #050506;
-    width: 20%;
-    height: 100%;
-    position: fixed;
-    overflow: hidden;
-    border-image: linear-gradient(to top, #151414 0%, #f7eba3 100%) 1; 
-    border-right: 4px solid;
-    margin: 0;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-} 
-.nav div h1 {
-    bottom: 0;
-    padding: 25px;
-    color: #E6ECE6;
-    background: linear-gradient(45deg, #050506, var(--dark-cool-yellow));
-    position: absolute;
-    width: 100%;
-}
-.nav a:nth-child(5) {
-    font-weight: bold;
-}
-.nav a {
-    text-decoration: none;
-    display: block;
-    text-align: center;
-    padding: 30px;
-    background: linear-gradient(45deg, var(--cool-yellow) 0%, #050505 50%);
-    background-size: 1000px;
-    background-position: -560px;
-    transition: 1s ease-in-out;
-}
-.nav a:hover {
-    background-position: 0px;
-}
 .intro {
     margin-left: 20%;
     z-index: -1;
-    width: 100%;
     top: 10px;
     padding: 50px;
     font-size: 75px;
@@ -65,25 +27,12 @@ body {
 }
 .abt .headers {
     margin: 0;
-}
-.abt .headers::before {
-    height: 800px;
+    margin-left: 30px
 }
 .headers {
     font-size: 50px;
     padding: 25px;
-    margin-left: 22%;
     position: relative;
-}
-.headers::before{
-    content: '.';
-    color: transparent;
-    height: 150px;
-    border-radius: 25px;
-    position: absolute;
-    margin-right: 25px;
-    width: 25px;
-    background-color: var(--light-yellow);
 }
 .abt {
     margin-left: 20%;
@@ -94,12 +43,11 @@ body {
 .abt div {
     transition: 1s ease-in-out;
     background-color: #101010;
-    width: 200px;
+    width: 80%;
     font-size: 20px;
     padding: 25px;
-    padding-right: 60%;
-    margin-left: 75px;
     display: flex;
+    margin-left: 3vw;
 }
 .abt div:nth-of-type(1){
     height: 30px;
@@ -108,18 +56,14 @@ body {
     font-size: 25px;
     text-align: center;
 }
-.headers .abtdev {
-    margin-left: 40px;
-    font-size: 18px;
-}
 #headp {
+    margin-left: 20vw;
+    z-index: -1;
     margin-top: 50px;
-}
-#headp:before {
-    height: 400px;
+    background: linear-gradient(45deg, #fde2a4, #000000 70%);
 }
 ul {
-    margin-left: 40px;
+    margin-left: 30px;
     margin-top: 25px;
     padding: 25px;
     border-radius: 15px;
@@ -148,4 +92,17 @@ footer a {
 footer p{
     margin-left: 22%;
     color: white;
+}
+@media all and (max-width: 830px){
+    #headp, .intro, .abt {
+        margin-left: 0px;
+    } 
+    .intro {
+        font-size: 50px;
+        top: 70px;
+        word-break: break-all;
+    }
+    .mob-nav-bar {
+    	display: block;
+    }
 }

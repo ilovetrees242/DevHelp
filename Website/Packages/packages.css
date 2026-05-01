@@ -27,8 +27,8 @@ body{
     border-right: 4px solid;
     margin: 0
 } 
-.nav div {
-    background-color: #B292AC;
+.mob-nav div h1 {
+    margin: 0px;
 }
 .nav div h1 {
     bottom: 0;
@@ -108,11 +108,12 @@ body{
 	border-radius: 15px;
 }
 .pkgbox > .pkg {
-	color: #ECE6E9;
-	text-decoration: none;
+	color: var(--cool-yellow);
 	margin: 25px;
 	font-size: 50px;
-
+}
+.pkgbox .pkgver b, .pkgbox .pkgdesc b {
+    color: var(--cool-yellow);
 }
 .pkgbox > .pkgdesc {
     color: #E6E0E3;
@@ -153,4 +154,13 @@ body{
 pre, code {
     tab-size: 4;
     -moz-tab-size: 4;
+}
+@media all and (max-width: 830px){
+    .reponame {
+        margin: 0;
+        margin-top: 70px;
+    }
+    .alphabets, .pkgbox {
+        margin-left: 5px;
+    }
 }
