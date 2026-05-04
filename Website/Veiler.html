@@ -30,13 +30,11 @@
         </div>
     </div>
     <div class="mob-nav-panel">
-        <a href="linux.html">Linux</a>
         <a href="c.html">C</a>
         <a href="Packages/packages.html">Packages</a>
         <a href="index.html">Home</a>	
     </div>
     <div class="nav">
-        <a href="linux.html">Linux</a>
         <a href="c.html">C</a>
         <a href="Packages/packages.html">Packages</a>
         <a href="index.html">Home</a>
@@ -198,12 +196,14 @@
     <br>
     <li><b class="code">--skip-installed: </b> This option will make the package manager <i class="special-word">skip installing the packages which are already installed on the system</i>. Suppose you want to install the following packages: <i class="special-word">which bash neofetch fastfetch</i>. And you already have neofetch installed and you want to skip building and installing the packages which are already installed on the system. Then in that case you can use <b>--skip-installed</b> option to skip building packages which are already installed, which in this case will make the package manager install the following: <i class="special-word">which bash fastfetch</i></li><br>
     <li><b class="code">--with-dest: </b> This option requires an additional argument to be used. Using this option, you can choose to <i class="special-word">install packages in a custom directory</i> instead of the default directory /. Note that argument provided to this option must be an <i class="special-word">absolute path</i>, otherwise it can cause issues at install time.</li><br>
+    <li><b class="code">--config: </b> This option also requires an additional argument to be used. Using this option, you can choose to <i class="special-word">use a custom configuration file</i> instead of the default configuration file <i class="special-word">/etc/Veiler/veiler.conf</i>. Note that argument provided to this option must be an <i class="special-word">absolute path</i>.</li><br>
     </ul><br>
     <h1 class="bigheaders" id="configfile">Using the configuration file</h1><br>
     <h2 class="headers">Introduction</h2>
     <p class="para">You will find the configuration file for Veiler at /etc/Veiler/veiler.conf after installing the package manager. You can use the configuration file to set default options everytime you perform an action with the package manager instead of having to use options again and again</p>
     <h2 class="headers">Variables</h2>
-    <h3 class="headers" style="font-size: 20px;"> A table of variables which are valid </h3>
+    <h3 class="headers" style="font-size: 20px; font-weight: 400"> A table of variables which are valid </h3>
+    <br>
     <table>
         <tr class="op"><th colspan="4">Operation variables</th></tr>
         <tr class="heading"><th>Name</th><th>Type</th><th>Purpose</th><th>Usage</th></tr>
@@ -227,7 +227,7 @@
         <tr><td>VEILERDBPATH</td><td>String</td><td>This variable contains an absolute path to the database of the package manager. The package manager uses this database to get information related to packages, like their name, version, source, etc. See <a class="special-word" href="#pathvars_vdb">DB Path</a> for more information. Using an empty directory as the DBPATH will make the package manager "confused" ( as it will have nowhere to get data from ). Default value is <i class="special-word">/var/db/Veiler</i></td><td>To use this, make sure the DB directory exists, and has the subdirectories local and sync with package entries as directories. Set an absolute path to the database you want to use.</td></tr>
         <tr><td>VEILERCONFIGPATH</td><td>String</td><td>This variable contains an absolute path to the configuration file for Veiler. Though it would not make sense to have the path to the configuration file inside the configuration file. This variable is set inside the package manager to <i class="special-word">/etc/Veiler/veiler.conf</i>. You can use another configuration file using the <b>--config</b> option.<td>To use this, do not set this variable inside any existing configuration file, but pass the path to it manually through command line, or you can change it inside the package manager</tr>
     </table>
-
+    <br>
     <h1 class="bigheaders">How it works</h1><br>
     <p class="para">In my opinion, this package manager is fairly one of the most simplest package managers I have seen out of all. Mainly due to this package manager focusing more on installing and building the packages instead of running extra things. So here is how it works under the hood: </p>
     <h2 class="headers">Unveil</h2>
