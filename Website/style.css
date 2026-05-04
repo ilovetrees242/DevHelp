@@ -67,7 +67,7 @@ body {
     margin: 0;
 }
 .abt .headers::before {
-    height: 800px;
+    height: 600px;
 }
 .headers {
     font-size: 50px;
