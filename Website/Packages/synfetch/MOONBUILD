@@ -1,0 +1,52 @@
+#!/bin/bash
+source "$VEILERDBPATH/sync/synfetch/info"
+trap 'echo -e "${BLUE}Interrupted. Goodbye!${NC}"; exit 1' INT
+case $1 in
+    getpkg)
+        if [ ! -f "$MOONPKG.tar.gz" ]; then
+            if [ "$VEILERQUIET" -eq 1 ]; then 
+                wget -q --show-progress ""$SRC""
+            else 
+                wget -nv --show-progress ""$SRC""
+            fi
+        fi
+    ;;
+    build)
+       # CONFIGPARAMS=()
+       # for FLAG in ${USEFLAGS[@]}; do
+       #     case $FLAG in
+       #         *)
+       #             CONFIGPARAMS+=("DUMY")
+       #         ;;
+       #     esac
+       # done
+        if [ "$VEILERQUIET" -eq 1 ]; then
+            tar xf "$MOONPKG.tar.gz"
+            pushd "$MOONPKG" &> /dev/null
+                # configure command goes here
+                true
+                # build command goes here
+                true
+            popd &> /dev/null
+        else
+            tar xvf "$MOONPKG.tar.gz"
+            pushd "$MOONPKG"
+                # configure command goes here
+                true
+                # build command goes here
+                true
+            popd
+        fi
+    ;;
+    install)
+        pushd $MOONPKG &> /dev/null
+            # install command goes here
+            mkdir $PWD/$MOONPKG/DEST
+            if [ $VEILERQUIET -eq 1 ]; then
+                install -m 755 ./synfetch /usr/bin/
+            else
+                install -v -m  755 ./synfetch /usr/bin/
+            fi
+        popd &> /dev/null
+    ;;
+esac
